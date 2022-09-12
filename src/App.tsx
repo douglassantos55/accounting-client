@@ -1,38 +1,50 @@
-import type { Component } from 'solid-js';
+import { Link, Route, Routes } from '@solidjs/router';
+import { Component, lazy } from 'solid-js';
+import Home from './pages/Home';
+const Accounts = lazy(() => import('./pages/Accounts'));
 
 const App: Component = () => {
     return (
-        <header class="navbar navbar-expand-md bg-light">
-            <div class="container">
-                <a class="navbar-brand" href="#">Accounting</a>
+        <>
+            <header class="navbar navbar-expand-md bg-light">
+                <div class="container">
+                    <Link class="navbar-brand" href="/">Accounting</Link>
 
-                <div class="collapse navbar-collapse">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">Accounts</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">Customers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">Products</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">Vendors</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">Services</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">Purchases</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">Sales</a>
-                        </li>
-                    </ul>
+                    <div class="collapse navbar-collapse">
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                <Link href="/accounts" class="nav-link">Accounts</Link>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">Customers</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">Products</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">Vendors</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">Services</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">Purchases</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">Sales</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </header>
+            </header>
+
+            <main>
+                <Routes>
+                    <Route path="/" component={Home} />
+                    <Route path="/accounts" component={Accounts} />
+                </Routes>
+            </main>
+        </>
     );
 };
 
