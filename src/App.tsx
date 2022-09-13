@@ -1,6 +1,7 @@
 import { Link, Route, Routes } from '@solidjs/router';
 import { Component, lazy } from 'solid-js';
 import Home from './pages/Home';
+
 const Accounts = lazy(() => import('./pages/Accounts'));
 
 const App: Component = () => {
@@ -41,7 +42,10 @@ const App: Component = () => {
             <main>
                 <Routes>
                     <Route path="/" component={Home} />
-                    <Route path="/accounts" component={Accounts} />
+
+                    <Route path="/accounts">
+                        <Accounts />
+                    </Route>
                 </Routes>
             </main>
         </>
