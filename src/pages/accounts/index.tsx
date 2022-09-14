@@ -1,8 +1,8 @@
 import { Route } from "@solidjs/router";
 import { Component, lazy } from "solid-js";
 
-const List = lazy(() => import('./accounts/List'));
-const Form = lazy(() => import('./accounts/Form'));
+const List = lazy(() => import('./List'));
+const Form = lazy(() => import('./Form'));
 
 const Accounts: Component = () => {
     return (

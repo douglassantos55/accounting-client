@@ -2,7 +2,7 @@ import { Link, Route, Routes } from '@solidjs/router';
 import { Component, lazy } from 'solid-js';
 import Home from './pages/Home';
 
-const Accounts = lazy(() => import('./pages/Accounts'));
+const Accounts = lazy(() => import('./pages/accounts'));
 
 const App: Component = () => {
     return (
