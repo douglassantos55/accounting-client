@@ -1,5 +1,5 @@
 import { Link } from "@solidjs/router";
-import axios from "axios";
+import axios from "../../axios";
 import { Component, createSignal, For, Match, onMount, Switch } from "solid-js";
 import { Account } from "../../types";
 
@@ -8,11 +8,8 @@ const List: Component = () => {
     const [accounts, setAccounts] = createSignal<Account[]>([]);
 
     onMount(async () => {
-        const res = await axios.get('http://localhost:8080/accounts', {
-            headers: { 'CompanyID': '1' }
-        });
         setLoading(false);
-        setAccounts(res.data);
+        setAccounts(await axios.get('/accounts'));
     })
 
     return (

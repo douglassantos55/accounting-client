@@ -1,5 +1,9 @@
 import { Accessor, Component, createContext, createSignal, ParentProps, useContext } from "solid-js";
 
+type Error = {
+    error: string;
+}
+
 type Form = {
     errors: Accessor<string[]>;
     data: Accessor<Record<string, any>>;
@@ -31,7 +35,7 @@ export const Form: Component<ParentProps<FormProps>> = (props: any) => {
             setErrors([]);
             await props.handleSubmit(data());
         } catch (err) {
-            setErrors(prev => ([...prev, (err as Error).message]));
+            setErrors(prev => ([...prev, (err as Error).error]));
         }
     }
 

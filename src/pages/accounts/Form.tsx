@@ -1,5 +1,5 @@
 import { useNavigate } from "@solidjs/router";
-import axios from "axios";
+import axios from "../../axios";
 import { Component, createSignal, Index, For, onMount } from "solid-js";
 import { Form, useForm } from "../../components/Form";
 import { Account, AccountType } from "../../types";
@@ -46,20 +46,14 @@ export default function() {
     const navigate = useNavigate();
     const [accounts, setAccounts] = createSignal<Account[]>([]);
 
-    onMount(async () => {
-        const res = await axios.get("http://localhost:8080/accounts", {
-            headers: { CompanyID: 1 },
-        })
-        setAccounts(res.data);
-    })
+    onMount(async () => setAccounts(await axios.get("/accounts")));
 
     async function createAccount(data: Record<string, any>) {
-        await axios.post("http://localhost:8080/accounts", {
+        await axios.post("/accounts", {
             name: data.name,
             type: parseInt(data.type),
             parent_id: data.parent_id ? parseInt(data.parent_id) : null,
-        }, { headers: { CompanyID: 1 } });
-
+        });
         navigate("/accounts");
     }
 
