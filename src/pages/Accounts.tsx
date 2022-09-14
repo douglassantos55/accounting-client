@@ -8,6 +8,7 @@ const Accounts: Component = () => {
     return (
         <>
             <Route path="/" component={List} />
+            <Route path="/create" component={Form} />
         </>
     );
 }
