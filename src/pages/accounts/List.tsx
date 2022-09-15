@@ -2,14 +2,15 @@ import { Link } from "@solidjs/router";
 import axios from "../../axios";
 import { Component, createSignal, For, Match, onMount, Switch } from "solid-js";
 import { Account } from "../../types";
+import ListItem from "./ListItem";
 
 const List: Component = () => {
     const [loading, setLoading] = createSignal<boolean>(true);
     const [accounts, setAccounts] = createSignal<Account[]>([]);
 
     onMount(async () => {
-        setLoading(false);
         setAccounts(await axios.get('/accounts'));
+        setLoading(false);
     })
 
     return (
@@ -25,14 +26,29 @@ const List: Component = () => {
                 </Link>
             </div>
 
-            <Switch fallback={<p>No accounts created yet.</p>}>
-                <Match when={loading()}>
-                    <p>Fetching data, please wait...</p>
-                </Match>
-                <Match when={accounts().length > 0}>
-                    <For each={accounts()}>{account => <p>{account.name}</p>}</For>
-                </Match>
-            </Switch>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Account</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <Switch fallback={<tr><td colspan="2">No accounts created yet.</td></tr>}>
+                        <Match when={loading()}>
+                            <tr>
+                                <td colspan="2">Fetching data, please wait...</td>
+                            </tr>
+                        </Match>
+                        <Match when={accounts().length > 0}>
+                            <For each={accounts()}>{account =>
+                                <ListItem account={account} depth={0} />
+                            }</For>
+                        </Match>
+                    </Switch>
+                </tbody>
+            </table>
         </div >
     );
 }

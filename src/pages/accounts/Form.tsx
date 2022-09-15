@@ -6,6 +6,23 @@ import { Account, AccountType } from "../../types";
 
 const TYPES = Object.values(AccountType).filter(v => typeof v !== "number");
 
+const AccountOption: Component<{ account: Account, depth: number }> = (props) => {
+    return (
+        <>
+            <option value={props.account.ID}>
+                <Index each={new Array(props.depth)}>{() =>
+                    <span>&nbsp;&nbsp;</span>
+                }</Index>
+                {props.account.name}
+            </option>
+
+            <For each={props.account.children}>{child =>
+                <AccountOption account={child} depth={props.depth + 1} />
+            }</For>
+        </>
+    );
+}
+
 const AccountForm: Component<{ accounts: Account[] }> = (props) => {
     const { data, errors, handleChange } = useForm();
 
@@ -32,7 +49,7 @@ const AccountForm: Component<{ accounts: Account[] }> = (props) => {
                 <select name="parent_id" class="form-control" value={data().parent_id} onInput={handleChange}>
                     <option value="">Select an option</option>
                     <For each={props.accounts}>{account =>
-                        <option value={account.ID}>{account.name}</option>
+                        <AccountOption account={account} depth={0} />
                     }</For>
                 </select>
             </div>
