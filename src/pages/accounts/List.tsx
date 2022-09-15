@@ -8,10 +8,17 @@ const List: Component = () => {
     const [loading, setLoading] = createSignal<boolean>(true);
     const [accounts, setAccounts] = createSignal<Account[]>([]);
 
-    onMount(async () => {
+    async function deleteAccount(id: number) {
+        await axios.delete(`/accounts/${id}`);
+        await loadAccounts();
+    }
+
+    async function loadAccounts() {
         setAccounts(await axios.get('/accounts'));
         setLoading(false);
-    })
+    }
+
+    onMount(loadAccounts);
 
     return (
         <div class="container">
@@ -43,7 +50,7 @@ const List: Component = () => {
                         </Match>
                         <Match when={accounts().length > 0}>
                             <For each={accounts()}>{account =>
-                                <ListItem account={account} depth={0} />
+                                <ListItem account={account} depth={0} delete={deleteAccount} />
                             }</For>
                         </Match>
                     </Switch>
