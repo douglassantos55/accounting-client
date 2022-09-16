@@ -21,8 +21,8 @@ const List: Component = () => {
     onMount(loadAccounts);
 
     return (
-        <div class="container">
-            <div class="d-flex align-items-center">
+        <div class="container py-4">
+            <div class="d-flex align-items-center mb-4">
                 <h1>Accounts</h1>
 
                 <Link
@@ -34,13 +34,6 @@ const List: Component = () => {
             </div>
 
             <table class="table">
-                <thead>
-                    <tr>
-                        <th>Account</th>
-                        <th class="text-end">Actions</th>
-                    </tr>
-                </thead>
-
                 <tbody>
                     <Switch fallback={<tr><td colspan="2">No accounts created yet.</td></tr>}>
                         <Match when={loading()}>
