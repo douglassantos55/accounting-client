@@ -7,6 +7,8 @@ export enum AccountType {
     Revenue,
 }
 
+export const TYPES = Object.values(AccountType).filter(v => typeof v !== "number");
+
 export type Account = {
     ID: number;
     name: string;

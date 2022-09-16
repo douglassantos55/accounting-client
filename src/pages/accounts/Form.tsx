@@ -2,9 +2,8 @@ import { useNavigate, useParams } from "@solidjs/router";
 import axios from "../../axios";
 import { Component, createSignal, Index, For, onMount, Show } from "solid-js";
 import { Form, useForm } from "../../components/Form";
-import { Account, AccountType } from "../../types";
+import { Account, TYPES } from "../../types";
 
-const TYPES = Object.values(AccountType).filter(v => typeof v !== "number");
 
 const AccountOption: Component<{ account: Account, depth: number }> = (props) => {
     return (
