@@ -1,6 +1,6 @@
-import { useNavigate } from "@solidjs/router";
+import { useNavigate, useParams } from "@solidjs/router";
 import axios from "../../axios";
-import { Component, createSignal, Index, For, onMount } from "solid-js";
+import { Component, createSignal, Index, For, onMount, Show } from "solid-js";
 import { Form, useForm } from "../../components/Form";
 import { Account, AccountType } from "../../types";
 
@@ -54,35 +54,56 @@ const AccountForm: Component<{ accounts: Account[] }> = (props) => {
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-primary">Create</button>
+            <button type="submit" class="btn btn-primary">
+                {data().ID ? 'Save' : 'Create'}
+            </button>
         </div>
     );
 }
 
 export default function() {
+    const params = useParams();
     const navigate = useNavigate();
+
+    const [loading, setLoading] = createSignal(!!params.id);
     const [accounts, setAccounts] = createSignal<Account[]>([]);
 
-    onMount(async () => setAccounts(await axios.get("/accounts")));
-
-    async function createAccount(data: Record<string, any>) {
-        await axios.post("/accounts", {
-            name: data.name,
-            type: parseInt(data.type),
-            parent_id: data.parent_id ? parseInt(data.parent_id) : null,
-        });
-        navigate("/accounts");
-    }
-
-    const initialData = {
+    const [initialData, setInitialData] = createSignal({
         name: '',
         type: '',
         parent_id: '',
-    };
+    });
+
+    onMount(async function() {
+        setAccounts(await axios.get("/accounts"));
+        if (params.id) {
+            setInitialData(await axios.get(`/accounts/${params.id}`));
+            setLoading(false);
+        }
+    });
+
+    function normalize(data: Record<string, string>) {
+        return {
+            name: data.name,
+            type: parseInt(data.type),
+            parent_id: data.parent_id ? parseInt(data.parent_id) : null,
+        };
+    }
+
+    async function saveAccount(data: Record<string, string>) {
+        if (data.ID) {
+            await axios.put(`/accounts/${data.ID}`, normalize(data));
+        } else {
+            await axios.post("/accounts", normalize(data));
+        }
+        navigate("/accounts");
+    }
 
     return (
-        <Form handleSubmit={createAccount} initialData={initialData}>
-            <AccountForm accounts={accounts()} />
-        </Form>
+        <Show when={!loading()}>
+            <Form handleSubmit={saveAccount} initialData={initialData()}>
+                <AccountForm accounts={accounts()} />
+            </Form>
+        </Show>
     );
 }
