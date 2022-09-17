@@ -28,7 +28,7 @@ const AccountForm: Component<{ accounts: Account[] }> = (props) => {
         <div class="container">
             <h1>Create an account</h1>
 
-            <For each={errors()}>{error => <p>{error}</p>}</For>
+            <Index each={errors()}>{error => <p>{error}</p>}</Index>
 
             <div class="mb-3">
                 <input name="name" class="form-control" value={data().name} onInput={handleChange} />
