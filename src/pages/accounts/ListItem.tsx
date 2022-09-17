@@ -1,7 +1,7 @@
 import { Link } from "@solidjs/router";
 import { Component, createSignal, For } from "solid-js";
 import { useStore } from "../../store";
-import { Account, TYPES } from "../../types";
+import { Account, AccountType } from "../../types";
 
 type ListItemProps = {
     account: Account;
@@ -21,7 +21,7 @@ const ListItem: Component<ListItemProps> = (props: ListItemProps) => {
         <>
             <tr>
                 <td style={{ 'padding-left': `${props.depth * 1.5}rem` }}>{props.account.name}</td>
-                <td>{TYPES[props.account.type]}</td>
+                <td>{AccountType[props.account.type]}</td>
                 <td>
                     <div class="d-flex gap-2 justify-content-end align-items-center">
                         <Link class="btn btn-sm btn-primary" href={`/accounts/edit/${props.account.ID}`}>

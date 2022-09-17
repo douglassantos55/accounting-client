@@ -37,9 +37,9 @@ const AccountForm: Component<{ accounts: Account[] }> = (props) => {
             <div class="mb-3">
                 <select name="type" class="form-control" value={data().type} onInput={handleChange}>
                     <option value="">Select an option</option>
-                    <Index each={TYPES}>{(type, idx) =>
-                        <option value={idx}>{type}</option>
-                    }</Index>
+                    <For each={TYPES}>{type =>
+                        <option value={type.id}>{type.value}</option>
+                    }</For>
                 </select>
             </div>
 

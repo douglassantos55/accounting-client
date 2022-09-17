@@ -10,7 +10,6 @@ const List: Component = () => {
 
     return (
         <div class="container py-4">
-            {JSON.stringify(accounts, null, 2)}
             <div class="d-flex align-items-center mb-4">
                 <h1>Accounts</h1>
 

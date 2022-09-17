@@ -1,5 +1,5 @@
 export enum AccountType {
-    Asset,
+    Asset = 1,
     Liability,
     Equity,
     Dividend,
@@ -7,7 +7,17 @@ export enum AccountType {
     Revenue,
 }
 
-export const TYPES = Object.values(AccountType).filter(v => typeof v !== "number");
+function toMap(source: object): { id: number, value: string }[] {
+    const items = [];
+    const keys = Object.keys(source).filter(v => !isNaN(parseInt(v)));
+    for (let i = 0; i < keys.length; i++) {
+        const key = keys[i] as keyof typeof source;
+        items.push({ id: key, value: source[key] });
+    }
+    return items;
+}
+
+export const TYPES = toMap(AccountType);
 
 export type Account = {
     ID: number;
