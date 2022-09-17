@@ -3,6 +3,7 @@ import { Component, lazy } from 'solid-js';
 import Home from './pages/Home';
 
 const Accounts = lazy(() => import('./pages/accounts'));
+const Customers = lazy(() => import('./pages/customers'));
 
 const App: Component = () => {
     return (
@@ -17,7 +18,7 @@ const App: Component = () => {
                                 <Link href="/accounts" class="nav-link">Accounts</Link>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="nav-link">Customers</a>
+                                <a href="/customers" class="nav-link">Customers</a>
                             </li>
                             <li class="nav-item">
                                 <a href="#" class="nav-link">Products</a>
@@ -45,6 +46,10 @@ const App: Component = () => {
 
                     <Route path="/accounts">
                         <Accounts />
+                    </Route>
+
+                    <Route path="/customers">
+                        <Customers />
                     </Route>
                 </Routes>
             </main>
