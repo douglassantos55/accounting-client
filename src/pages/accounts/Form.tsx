@@ -3,7 +3,7 @@ import axios from "../../axios";
 import { Component, createSignal, Index, For, onMount, Show } from "solid-js";
 import { Form, useForm } from "../../components/Form";
 import { Account, TYPES } from "../../types";
-
+import { useStore } from "../../components/Store";
 
 const AccountOption: Component<{ account: Account, depth: number }> = (props) => {
     return (
@@ -63,9 +63,9 @@ const AccountForm: Component<{ accounts: Account[] }> = (props) => {
 export default function() {
     const params = useParams();
     const navigate = useNavigate();
+    const { accounts, fetchAccounts, saveAccount } = useStore();
 
     const [loading, setLoading] = createSignal(!!params.id);
-    const [accounts, setAccounts] = createSignal<Account[]>([]);
 
     const [initialData, setInitialData] = createSignal({
         name: '',
@@ -74,34 +74,22 @@ export default function() {
     });
 
     onMount(async function() {
-        setAccounts(await axios.get("/accounts"));
+        await fetchAccounts();
         if (params.id) {
             setInitialData(await axios.get(`/accounts/${params.id}`));
             setLoading(false);
         }
     });
 
-    function normalize(data: Record<string, string>) {
-        return {
-            name: data.name,
-            type: parseInt(data.type),
-            parent_id: data.parent_id ? parseInt(data.parent_id) : null,
-        };
-    }
-
-    async function saveAccount(data: Record<string, string>) {
-        if (data.ID) {
-            await axios.put(`/accounts/${data.ID}`, normalize(data));
-        } else {
-            await axios.post("/accounts", normalize(data));
-        }
+    async function save(data: Record<string, string>) {
+        await saveAccount(data);
         navigate("/accounts");
     }
 
     return (
         <Show when={!loading()}>
-            <Form handleSubmit={saveAccount} initialData={initialData()}>
-                <AccountForm accounts={accounts()} />
+            <Form handleSubmit={save} initialData={initialData()}>
+                <AccountForm accounts={Object.values(accounts.state.byId)} />
             </Form>
         </Show>
     );

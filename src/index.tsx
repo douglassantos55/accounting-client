@@ -3,9 +3,12 @@ import { Router } from '@solidjs/router';
 import { render } from 'solid-js/web';
 
 import App from './App';
+import { Store } from './components/Store';
 
 render(() => (
-    <Router>
-        <App />
-    </Router>
+    <Store>
+        <Router>
+            <App />
+        </Router>
+    </Store>
 ), document.getElementById('root') as HTMLElement);

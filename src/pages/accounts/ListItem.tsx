@@ -1,19 +1,20 @@
 import { Link } from "@solidjs/router";
 import { Component, createSignal, For } from "solid-js";
+import { useStore } from "../../components/Store";
 import { Account, TYPES } from "../../types";
 
 type ListItemProps = {
     account: Account;
     depth: number;
-    delete: (id: number) => Promise<void>;
 }
 
 const ListItem: Component<ListItemProps> = (props: ListItemProps) => {
+    const { deleteAccount } = useStore();
     const [loading, setLoading] = createSignal(false);
 
-    async function deleteAccount() {
+    async function remove() {
         setLoading(true);
-        props.delete(props.account.ID);
+        deleteAccount(props.account.ID);
     }
 
     return (
@@ -31,7 +32,7 @@ const ListItem: Component<ListItemProps> = (props: ListItemProps) => {
                             type="button"
                             class="btn btn-sm btn-danger"
                             disabled={loading()}
-                            onClick={deleteAccount}
+                            onClick={remove}
                         >
                             Delete
                         </button>
@@ -39,7 +40,7 @@ const ListItem: Component<ListItemProps> = (props: ListItemProps) => {
                 </td>
             </tr>
             <For each={props.account.children}>{child =>
-                <ListItem account={child} depth={props.depth + 1} delete={props.delete} />
+                <ListItem account={child} depth={props.depth + 1} />
             }</For>
         </>
     );
