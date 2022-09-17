@@ -31,7 +31,7 @@ const List: Component = () => {
                             </tr>
                         </Match>
                         <Match when={accounts.state.fetched}>
-                            <For each={accounts.parents()}>{account =>
+                            <For each={accounts.hierarchical()}>{account =>
                                 <ListItem account={account} depth={0} />
                             }</For>
                         </Match>

@@ -5,7 +5,7 @@ import { Account } from "../types";
 
 type Getters = {
     all: Accessor<Account[]>;
-    parents: Accessor<Account[]>;
+    hierarchical: Accessor<Account[]>;
 }
 
 export type AccountModule = Module<Account> & Getters;
@@ -19,13 +19,28 @@ function create(): AccountModule {
                 return store.state.byId[id];
             });
         });
+
         const parents = createMemo(function() {
             return all().filter(function(account: Account) {
                 return account.parent_id == null;
             });
         });
 
-        return { all, parents };
+        const hierarchical = createMemo(function() {
+            function getChildren(id: number): Account[] {
+                return all().filter(acc => acc.parent_id == id).map(child => ({
+                    ...child,
+                    children: getChildren(child.ID),
+                }));
+            }
+
+            return parents().map((account: Account) => ({
+                ...account,
+                children: getChildren(account.ID),
+            }));
+        });
+
+        return { all, hierarchical };
     });
 
     function _normalize(data: Record<string, string>) {

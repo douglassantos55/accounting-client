@@ -13,6 +13,7 @@ export type Account = {
     ID: number;
     name: string;
     type: AccountType;
+    parent_id: number;
     parent: Account | null;
     children: Account[] | null;
 }

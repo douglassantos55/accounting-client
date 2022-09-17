@@ -89,7 +89,7 @@ export default function() {
     return (
         <Show when={!loading()}>
             <Form handleSubmit={save} initialData={initialData()}>
-                <AccountForm accounts={Object.values(accounts.state.byId)} />
+                <AccountForm accounts={accounts.hierarchical()} />
             </Form>
         </Show>
     );
