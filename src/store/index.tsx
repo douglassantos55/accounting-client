@@ -1,7 +1,6 @@
 import { createContext, ParentProps, useContext } from "solid-js";
 import { createStore } from "solid-js/store";
-import accounts from "../store/accounts";
-import { Account } from "../types";
+import accounts, { AccountModule } from "../store/accounts";
 
 type State<T> = {
     ids: number[];
@@ -22,6 +21,7 @@ export type Module<T> = {
     fetch: (id: number) => Promise<T>;
     delete: (id: number) => Promise<void>;
     save: (data: Record<string, string>) => Promise<void>;
+    [K: string]: any;
 }
 
 export function makeStore<T>(): Store<T> {
@@ -59,7 +59,7 @@ export function makeStore<T>(): Store<T> {
 }
 
 type AppStore = {
-    accounts: Module<Account>;
+    accounts: AccountModule;
 }
 
 const StoreContext = createContext<AppStore>();

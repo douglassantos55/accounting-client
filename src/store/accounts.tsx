@@ -1,9 +1,32 @@
+import { Accessor, createMemo, createRoot } from "solid-js";
 import { makeStore, Module } from ".";
 import axios from "../axios";
 import { Account } from "../types";
 
-function create(): Module<Account> {
+type Getters = {
+    all: Accessor<Account[]>;
+    parents: Accessor<Account[]>;
+}
+
+export type AccountModule = Module<Account> & Getters;
+
+function create(): AccountModule {
     const store = makeStore<Account>();
+
+    const getters = createRoot(function() {
+        const all = createMemo(function() {
+            return store.state.ids.map(function(id: number) {
+                return store.state.byId[id];
+            });
+        });
+        const parents = createMemo(function() {
+            return all().filter(function(account: Account) {
+                return account.parent_id == null;
+            });
+        });
+
+        return { all, parents };
+    });
 
     function _normalize(data: Record<string, string>) {
         return {
@@ -32,7 +55,7 @@ function create(): Module<Account> {
 
     async function fetchAccounts() {
         if (!store.state.fetched) {
-            store.set(await axios.get<any, Account[]>('/accounts'));
+            store.set(await axios.get('/accounts'));
         }
     }
 
@@ -47,6 +70,7 @@ function create(): Module<Account> {
         delete: deleteAccount,
         fetchAll: fetchAccounts,
         save: saveAccount,
+        ...getters,
     }
 }
 
