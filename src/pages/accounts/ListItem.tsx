@@ -1,6 +1,6 @@
 import { Link } from "@solidjs/router";
 import { Component, createSignal, For } from "solid-js";
-import { useStore } from "../../components/Store";
+import { useStore } from "../../store";
 import { Account, TYPES } from "../../types";
 
 type ListItemProps = {
@@ -9,12 +9,12 @@ type ListItemProps = {
 }
 
 const ListItem: Component<ListItemProps> = (props: ListItemProps) => {
-    const { deleteAccount } = useStore();
+    const { accounts } = useStore();
     const [loading, setLoading] = createSignal(false);
 
     async function remove() {
         setLoading(true);
-        deleteAccount(props.account.ID);
+        accounts.delete(props.account.ID);
     }
 
     return (

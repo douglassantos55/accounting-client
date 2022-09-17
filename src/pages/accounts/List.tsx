@@ -1,12 +1,12 @@
 import { Link } from "@solidjs/router";
 import { Component, For, Match, onMount, Switch } from "solid-js";
+import { useStore } from "../../store";
 import ListItem from "./ListItem";
-import { useStore } from "../../components/Store";
 
 const List: Component = () => {
-    const { accounts, fetchAccounts } = useStore();
+    const { accounts } = useStore();
 
-    onMount(fetchAccounts);
+    onMount(accounts.fetchAll);
 
     return (
         <div class="container py-4">

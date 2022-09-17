@@ -1,8 +1,8 @@
 import { useNavigate, useParams } from "@solidjs/router";
 import { Component, createSignal, Index, For, onMount, Show } from "solid-js";
 import { Form, useForm } from "../../components/Form";
+import { useStore } from "../../store";
 import { Account, TYPES } from "../../types";
-import { useStore } from "../../components/Store";
 
 const AccountOption: Component<{ account: Account, depth: number }> = (props) => {
     return (
@@ -62,7 +62,7 @@ const AccountForm: Component<{ accounts: Account[] }> = (props) => {
 export default function() {
     const params = useParams();
     const navigate = useNavigate();
-    const { accounts, fetchAccount, fetchAccounts, saveAccount } = useStore();
+    const { accounts } = useStore();
 
     const [loading, setLoading] = createSignal(!!params.id);
 
@@ -73,16 +73,16 @@ export default function() {
     });
 
     onMount(async function() {
-        await fetchAccounts();
+        await accounts.fetchAll();
         if (params.id) {
-            const account = await fetchAccount(parseInt(params.id));
+            const account = await accounts.fetch(parseInt(params.id));
             setInitialData({ ...account } as any);
             setLoading(false);
         }
     });
 
     async function save(data: Record<string, string>) {
-        await saveAccount(data);
+        await accounts.save(data);
         navigate("/accounts");
     }
 
