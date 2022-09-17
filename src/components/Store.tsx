@@ -57,12 +57,14 @@ function createModule<T>(): Module<T> {
 
 type StoreState = {
     accounts: Module<Account>;
+    fetchAccount: (id: number) => Promise<Account>;
     fetchAccounts: () => Promise<void>;
     deleteAccount: (id: number) => Promise<void>;
     saveAccount: (data: Record<string, string>) => Promise<void>;
 }
 
 const StoreContext = createContext<StoreState>();
+
 
 export function Store(props: ParentProps) {
     const accounts = createModule<Account>();
@@ -85,6 +87,13 @@ export function Store(props: ParentProps) {
         accounts.save(account.ID, account);
     }
 
+    async function fetchAccount(id: number) {
+        if (!accounts.state.byId[id]) {
+            accounts.save(id, await axios.get(`/accounts/${id}`));
+        }
+        return accounts.state.byId[id];
+    }
+
     async function fetchAccounts() {
         if (!accounts.state.fetched) {
             accounts.set(await axios.get<any, Account[]>('/accounts'));
@@ -101,7 +110,7 @@ export function Store(props: ParentProps) {
     }
 
     return (
-        <StoreContext.Provider value={{ ...state, fetchAccounts, deleteAccount, saveAccount }}>
+        <StoreContext.Provider value={{ ...state, fetchAccounts, deleteAccount, saveAccount, fetchAccount }}>
             {props.children}
         </StoreContext.Provider>
     );

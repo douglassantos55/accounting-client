@@ -1,5 +1,4 @@
 import { useNavigate, useParams } from "@solidjs/router";
-import axios from "../../axios";
 import { Component, createSignal, Index, For, onMount, Show } from "solid-js";
 import { Form, useForm } from "../../components/Form";
 import { Account, TYPES } from "../../types";
@@ -63,7 +62,7 @@ const AccountForm: Component<{ accounts: Account[] }> = (props) => {
 export default function() {
     const params = useParams();
     const navigate = useNavigate();
-    const { accounts, fetchAccounts, saveAccount } = useStore();
+    const { accounts, fetchAccount, fetchAccounts, saveAccount } = useStore();
 
     const [loading, setLoading] = createSignal(!!params.id);
 
@@ -76,7 +75,8 @@ export default function() {
     onMount(async function() {
         await fetchAccounts();
         if (params.id) {
-            setInitialData(await axios.get(`/accounts/${params.id}`));
+            const account = await fetchAccount(parseInt(params.id));
+            setInitialData({ ...account } as any);
             setLoading(false);
         }
     });
