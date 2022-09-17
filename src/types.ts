@@ -28,3 +28,11 @@ export type Account = {
     children: Account[] | null;
 }
 
+export type Customer = {
+    ID: number;
+    Name: string;
+    Email: string;
+    Cpf: string;
+    Phone: string;
+    Address: string;
+}
