@@ -12,8 +12,23 @@ const CustomerForm: Component = function() {
         navigate('/customers');
     }
 
+    const initialData = {
+        name: '',
+        email: '',
+        cpf: '',
+        phone: '',
+        address: {
+            postcode: '',
+            street: '',
+            number: '',
+            neighborhood: '',
+            city: '',
+            state: '',
+        },
+    }
+
     return (
-        <Form initialData={{ name: '', email: '', cpf: '', phone: '', address: { postcode: '' } }} handleSubmit={saveCustomer}>
+        <Form initialData={initialData} handleSubmit={saveCustomer}>
             <div class="container py-4">
                 <h1 class="mb-4">Create a customer</h1>
 
@@ -26,6 +41,11 @@ const CustomerForm: Component = function() {
                 <Field name="phone" label="Phone" />
 
                 <Field name="address.postcode" label="Postcode" />
+                <Field name="address.street" label="Street" />
+                <Field name="address.number" label="Number" />
+                <Field name="address.neighborhood" label="Neighborhood" />
+                <Field name="address.city" label="City" />
+                <Field name="address.state" label="State" />
 
                 <button type="submit" class="btn btn-primary">
                     Create
