@@ -1,8 +1,9 @@
 import { Accessor, Component, createContext, createMemo, createSignal, ParentProps, Show, useContext } from "solid-js";
+import { createStore } from "solid-js/store";
 
 type Form = {
+    data: Record<string, any>;
     errors: Accessor<Record<string, string>>;
-    data: Accessor<Record<string, any>>;
     handleChange: (evt: InputEvent) => void;
 }
 
@@ -42,33 +43,44 @@ export const Field: Component<FieldProps> = function(props) {
 
 export const Input: Component<{ name: string;[K: string]: any }> = function(props) {
     const { data, handleChange } = useForm();
+
+    function getValue(name: string, object: Record<string, any>): string {
+        const [obj, path] = name.split(".", 2);
+        if (path) {
+            return getValue(path, object[obj]);
+        }
+        return object[obj];
+    }
+
+    const value = createMemo(function() {
+        return getValue(props.name, data);
+    });
+
     return (
         <input
             {...props}
             class="form-control"
             onInput={handleChange}
-            value={data()[props.name]}
+            value={value()}
         />
     );
 }
 
 export const Form: Component<ParentProps<FormProps>> = (props: any) => {
-    const [data, setData] = createSignal(props.initialData);
+    const [data, setData] = createStore(props.initialData);
     const [errors, setErrors] = createSignal<Record<string, string>>({});
 
     function handleChange(evt: InputEvent) {
         const input = evt.target as HTMLInputElement
-        setData(prev => ({
-            ...prev,
-            [input.name]: input.value,
-        }))
+        // @ts-ignore
+        setData(...input.name.split("."), input.value);
     }
 
     async function handleSubmit(evt: SubmitEvent) {
         evt.preventDefault();
         try {
             setErrors({});
-            await props.handleSubmit(data());
+            await props.handleSubmit(data);
         } catch (err) {
             setErrors(prev => ({ ...prev, ...(err as Record<string, string>) }));
         }
