@@ -22,27 +22,25 @@ const List: Component = function() {
 
             <table class="table">
                 <tbody>
-                    <tr>
-                        <Switch>
-                            <Match when={!customers.state.fetched}>
-                                <td>Fetching data, please wait...</td>
-                            </Match>
-                            <Match when={customers.state.ids.length == 0}>
-                                <td>No customers created yet.</td>
-                            </Match>
-                            <Match when={customers.state.ids.length > 0}>
-                                <For each={Object.values(customers.state.byId)}>{customer => (
-                                    <>
-                                        <td>{customer.Name}</td>
-                                        <td>{customer.Email}</td>
-                                        <td>{customer.Cpf}</td>
-                                        <td>{customer.Phone}</td>
-                                        <td>{customer.Address}</td>
-                                    </>
-                                )}</For>
-                            </Match>
-                        </Switch>
-                    </tr>
+                    <Switch>
+                        <Match when={!customers.state.fetched}>
+                            <tr><td>Fetching data, please wait...</td></tr>
+                        </Match>
+                        <Match when={customers.state.ids.length == 0}>
+                            <tr><td>No customers created yet.</td></tr>
+                        </Match>
+                        <Match when={customers.state.ids.length > 0}>
+                            <For each={Object.values(customers.state.byId)}>{customer => (
+                                <tr>
+                                    <td>{customer.Name}</td>
+                                    <td>{customer.Email}</td>
+                                    <td>{customer.Cpf}</td>
+                                    <td>{customer.Phone}</td>
+                                    <td>{customer.Address}</td>
+                                </tr>
+                            )}</For>
+                        </Match>
+                    </Switch>
                 </tbody>
             </table>
         </div>
