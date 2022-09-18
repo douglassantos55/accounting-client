@@ -36,7 +36,22 @@ const List: Component = function() {
                                     <td>{customer.Email}</td>
                                     <td>{customer.Cpf}</td>
                                     <td>{customer.Phone}</td>
-                                    <td>{customer.Address}</td>
+                                    <td>{customer.Address.Street}, {customer.Address.Number}, {customer.Address.Postcode}</td>
+                                    <td>
+                                        <div class="d-flex gap-2 justify-content-end align-items-center">
+                                            <Link class="btn btn-sm btn-primary" href={`/accounts/edit/${customer.ID}`}>
+                                                Edit
+                                            </Link>
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-sm btn-danger"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+
+                                    </td>
                                 </tr>
                             )}</For>
                         </Match>

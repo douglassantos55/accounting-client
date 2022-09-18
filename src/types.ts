@@ -34,5 +34,14 @@ export type Customer = {
     Email: string;
     Cpf: string;
     Phone: string;
-    Address: string;
+    Address: Address;
+}
+
+export type Address = {
+    Street: string;
+    Postcode: string;
+    Neighborhood: string;
+    State: string;
+    City: string;
+    Number: string;
 }
