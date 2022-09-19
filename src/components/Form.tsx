@@ -1,10 +1,11 @@
-import { Accessor, Component, createContext, createMemo, createSignal, ParentProps, Show, useContext } from "solid-js";
+import { Accessor, Component, createContext, createMemo, createSignal, For, Match, ParentProps, Show, Switch, useContext } from "solid-js";
 import { createStore } from "solid-js/store";
 
 type Form = {
     data: Record<string, any>;
     errors: Accessor<Record<string, string>>;
     handleChange: (evt: InputEvent) => void;
+    getValue: (path: string, data: Record<string, any>) => string;
 }
 
 type FormProps = {
@@ -17,9 +18,10 @@ const FormContext = createContext<Form>();
 type FieldProps = {
     name: string;
     label?: string;
+    options?: Option[];
 }
 
-export const Field: Component<FieldProps> = function(props) {
+export const Field: Component<ParentProps<FieldProps>> = function(props) {
     const { errors } = useForm();
 
     const error = createMemo(function() {
@@ -32,7 +34,17 @@ export const Field: Component<FieldProps> = function(props) {
                 <label for={props.name} class="form-label">{props.label}</label>
             </Show>
 
-            <Input id={props.name} name={props.name} classList={{ 'is-invalid': error() }} />
+            <Switch>
+                <Match when={props.children}>
+                    {props.children}
+                </Match>
+                <Match when={!props.options}>
+                    <Input id={props.name} name={props.name} classList={{ 'is-invalid': error() }} />
+                </Match>
+                <Match when={props.options}>
+                    <Select id={props.name} name={props.name} options={props.options as Option[]} classList={{ 'is-invalid': error() }} />
+                </Match>
+            </Switch>
 
             <Show when={error()}>
                 <div class="invalid-feedback">{error()}</div>
@@ -41,16 +53,37 @@ export const Field: Component<FieldProps> = function(props) {
     );
 }
 
-export const Input: Component<{ name: string;[K: string]: any }> = function(props) {
-    const { data, handleChange } = useForm();
+type Option = {
+    id: number;
+    value: string;
+}
 
-    function getValue(name: string, object: Record<string, any>): string {
-        const [obj, path] = name.split(".", 2);
-        if (path) {
-            return getValue(path, object[obj]);
-        }
-        return object[obj];
-    }
+export const Select: Component<ParentProps<{ name: string; options?: Option[];[K: string]: any }>> = function(props) {
+    const { data, getValue, handleChange } = useForm();
+
+    const value = createMemo(function() {
+        return getValue(props.name, data);
+    });
+
+    return (
+        <select name={props.name} class="form-control" value={value()} onInput={handleChange}>
+            <Switch>
+                <Match when={!props.children}>
+                    <option value="">Select an option</option>
+                    <For each={props.options}>{(item: Option) =>
+                        <option value={item.id}>{item.value}</option>
+                    }</For>
+                </Match>
+                <Match when={props.children}>
+                    {props.children}
+                </Match>
+            </Switch>
+        </select>
+    );
+}
+
+export const Input: Component<{ name: string;[K: string]: any }> = function(props) {
+    const { data, getValue, handleChange } = useForm();
 
     const value = createMemo(function() {
         return getValue(props.name, data);
@@ -86,10 +119,20 @@ export const Form: Component<ParentProps<FormProps>> = (props: any) => {
         }
     }
 
+    function getValue(name: string, object: Record<string, any>): string {
+        const [obj, path] = name.split(".", 2);
+        if (path) {
+            return getValue(path, object[obj]);
+        }
+        return object[obj];
+    }
+
+
     const value: Form = {
         data,
         errors,
         handleChange,
+        getValue,
     }
 
     return (
