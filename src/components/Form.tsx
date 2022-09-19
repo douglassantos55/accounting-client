@@ -67,7 +67,7 @@ export const Input: Component<{ name: string;[K: string]: any }> = function(prop
 }
 
 export const Form: Component<ParentProps<FormProps>> = (props: any) => {
-    const [data, setData] = createStore(props.initialData);
+    const [data, setData] = createStore({ ...props.initialData });
     const [errors, setErrors] = createSignal<Record<string, string>>({});
 
     function handleChange(evt: InputEvent) {

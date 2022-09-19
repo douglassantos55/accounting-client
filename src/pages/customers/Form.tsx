@@ -1,57 +1,70 @@
-import { useNavigate } from "@solidjs/router";
-import { Component } from "solid-js";
+import { useNavigate, useParams } from "@solidjs/router";
+import { Component, createSignal, onMount, Show } from "solid-js";
 import { Field, Form } from "../../components/Form";
 import { useStore } from "../../store";
 
 const CustomerForm: Component = function() {
+    const params = useParams();
     const navigate = useNavigate();
     const { customers } = useStore();
+
+    const [loading, setLoading] = createSignal(!!params.id);
 
     async function saveCustomer(data: Record<string, string>) {
         await customers.save(data);
         navigate('/customers');
     }
 
-    const initialData = {
-        name: '',
-        email: '',
-        cpf: '',
-        phone: '',
-        address: {
-            postcode: '',
-            street: '',
-            number: '',
-            neighborhood: '',
-            city: '',
-            state: '',
+    let initialData = {
+        Name: '',
+        Email: '',
+        Cpf: '',
+        Phone: '',
+        Address: {
+            Postcode: '',
+            Street: '',
+            Number: '',
+            Neighborhood: '',
+            City: '',
+            State: '',
         },
     }
 
+    onMount(async function() {
+        if (params.id) {
+            const customer = await customers.fetch(parseInt(params.id));
+            initialData = JSON.parse(JSON.stringify(customer));
+            setLoading(false);
+        }
+    });
+
     return (
-        <Form initialData={initialData} handleSubmit={saveCustomer}>
-            <div class="container py-4">
-                <h1 class="mb-4">Create a customer</h1>
+        <Show when={!loading()} fallback={<p>Fetching data...</p>}>
+            <Form initialData={initialData} handleSubmit={saveCustomer}>
+                <div class="container py-4">
+                    <h1 class="mb-4">Create a customer</h1>
 
-                <Field name="name" label="Name" />
+                    <Field name="Name" label="Name" />
 
-                <Field name="email" label="Email" />
+                    <Field name="Email" label="Email" />
 
-                <Field name="cpf" label="CPF" />
+                    <Field name="Cpf" label="CPF" />
 
-                <Field name="phone" label="Phone" />
+                    <Field name="Phone" label="Phone" />
 
-                <Field name="address.postcode" label="Postcode" />
-                <Field name="address.street" label="Street" />
-                <Field name="address.number" label="Number" />
-                <Field name="address.neighborhood" label="Neighborhood" />
-                <Field name="address.city" label="City" />
-                <Field name="address.state" label="State" />
+                    <Field name="Address.Postcode" label="Postcode" />
+                    <Field name="Address.Street" label="Street" />
+                    <Field name="Address.Number" label="Number" />
+                    <Field name="Address.Neighborhood" label="Neighborhood" />
+                    <Field name="Address.City" label="City" />
+                    <Field name="Address.State" label="State" />
 
-                <button type="submit" class="btn btn-primary">
-                    Create
-                </button>
-            </div>
-        </Form>
+                    <button type="submit" class="btn btn-primary">
+                        {params.id ? 'Save' : 'Create'}
+                    </button>
+                </div>
+            </Form>
+        </Show>
     );
 }
 

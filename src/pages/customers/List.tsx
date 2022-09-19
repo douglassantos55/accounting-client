@@ -39,7 +39,7 @@ const List: Component = function() {
                                     <td>{customer.Address.Street}, {customer.Address.Number}, {customer.Address.Postcode}</td>
                                     <td>
                                         <div class="d-flex gap-2 justify-content-end align-items-center">
-                                            <Link class="btn btn-sm btn-primary" href={`/accounts/edit/${customer.ID}`}>
+                                            <Link class="btn btn-sm btn-primary" href={`/customers/edit/${customer.ID}`}>
                                                 Edit
                                             </Link>
 
