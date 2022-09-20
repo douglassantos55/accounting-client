@@ -1,5 +1,6 @@
 import { Link } from "@solidjs/router";
 import { For, Component, Switch, Match, onMount } from "solid-js";
+import Button from "../../components/Button";
 import { useStore } from "../../store";
 
 const List: Component = function() {
@@ -43,12 +44,13 @@ const List: Component = function() {
                                                 Edit
                                             </Link>
 
-                                            <button
+                                            <Button
                                                 type="button"
                                                 class="btn btn-sm btn-danger"
+                                                onClick={() => customers.delete(customer.ID)}
                                             >
                                                 Delete
-                                            </button>
+                                            </Button>
                                         </div>
 
                                     </td>
