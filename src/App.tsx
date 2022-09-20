@@ -4,6 +4,7 @@ import Home from './pages/Home';
 
 const Accounts = lazy(() => import('./pages/accounts'));
 const Customers = lazy(() => import('./pages/customers'));
+const Vendors = lazy(() => import('./pages/vendors'));
 
 const App: Component = () => {
     return (
@@ -24,7 +25,7 @@ const App: Component = () => {
                                 <a href="#" class="nav-link">Products</a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="nav-link">Vendors</a>
+                                <a href="/vendors" class="nav-link">Vendors</a>
                             </li>
                             <li class="nav-item">
                                 <a href="#" class="nav-link">Services</a>
@@ -50,6 +51,10 @@ const App: Component = () => {
 
                     <Route path="/customers">
                         <Customers />
+                    </Route>
+
+                    <Route path="/vendors">
+                        <Vendors />
                     </Route>
                 </Routes>
             </main>
