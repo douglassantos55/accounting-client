@@ -45,3 +45,10 @@ export type Address = {
     City: string;
     Number: string;
 }
+
+export type Vendor = {
+    ID: number;
+    Name: string;
+    Cnpj: string;
+    Address: Address;
+}
