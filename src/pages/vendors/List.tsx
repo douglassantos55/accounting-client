@@ -35,7 +35,7 @@ const List: Component = function() {
                                     <td>{vendor.Address.Street}, {vendor.Address.Number}, {vendor.Address.Postcode}</td>
                                     <td>
                                         <div class="d-flex gap-2 justify-content-end align-items-center">
-                                            <Link class="btn btn-sm btn-primary" href={`/customers/edit/${vendor.ID}`}>
+                                            <Link class="btn btn-sm btn-primary" href={`/vendors/edit/${vendor.ID}`}>
                                                 Edit
                                             </Link>
 
