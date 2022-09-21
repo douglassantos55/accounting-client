@@ -2,6 +2,7 @@ import { createContext, ParentProps, useContext } from "solid-js";
 import { createStore } from "solid-js/store";
 import accounts, { AccountModule } from "../store/accounts";
 import customers, { CustomerModule } from "./customers";
+import products, { ProductsModule } from "./products";
 import vendors, { VendorModule } from "./vendors";
 
 type State<T> = {
@@ -64,6 +65,7 @@ type AppStore = {
     accounts: AccountModule;
     customers: CustomerModule;
     vendors: VendorModule;
+    products: ProductsModule;
 }
 
 const StoreContext = createContext<AppStore>();
@@ -73,6 +75,7 @@ export function Store(props: ParentProps) {
         accounts,
         customers,
         vendors,
+        products,
     }
 
     return (

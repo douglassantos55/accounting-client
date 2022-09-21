@@ -52,3 +52,14 @@ export type Vendor = {
     Cnpj: string;
     Address: Address;
 }
+
+export type Product = {
+    ID: number;
+    Name: string;
+    Price: number;
+    Purchasable: boolean;
+    RevenueAccountID: number;
+    CostOfSaleAccountID: number;
+    InventoryAccountID: number;
+    VendorID: number;
+}
