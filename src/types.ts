@@ -21,11 +21,11 @@ export const TYPES = toMap(AccountType);
 
 export type Account = {
     ID: number;
-    name: string;
-    type: AccountType;
-    parent_id: number;
-    parent: Account | null;
-    children: Account[] | null;
+    Name: string;
+    Type: AccountType;
+    ParentID: number;
+    Parent: Account | null;
+    Children: Account[] | null;
 }
 
 export type Customer = {

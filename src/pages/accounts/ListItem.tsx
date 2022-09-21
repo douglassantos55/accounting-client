@@ -15,8 +15,8 @@ const ListItem: Component<ListItemProps> = (props: ListItemProps) => {
     return (
         <>
             <tr>
-                <td style={{ 'padding-left': `${props.depth * 1.5}rem` }}>{props.account.name}</td>
-                <td>{AccountType[props.account.type]}</td>
+                <td style={{ 'padding-left': `${props.depth * 1.5}rem` }}>{props.account.Name}</td>
+                <td>{AccountType[props.account.Type]}</td>
                 <td>
                     <div class="d-flex gap-2 justify-content-end align-items-center">
                         <Link class="btn btn-sm btn-primary" href={`/accounts/edit/${props.account.ID}`}>
@@ -33,7 +33,7 @@ const ListItem: Component<ListItemProps> = (props: ListItemProps) => {
                     </div>
                 </td>
             </tr>
-            <For each={props.account.children}>{child =>
+            <For each={props.account.Children}>{child =>
                 <ListItem account={child} depth={props.depth + 1} />
             }</For>
         </>

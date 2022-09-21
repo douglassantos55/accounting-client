@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "@solidjs/router";
-import { Component, createSignal, Index, For, onMount, Show } from "solid-js";
+import { Component, Index, For, onMount } from "solid-js";
 import { Field, Form, Select } from "../../components/Form";
 import { useStore } from "../../store";
 import { Account, TYPES } from "../../types";
@@ -11,38 +11,37 @@ const AccountOption: Component<{ account: Account, depth: number }> = (props) =>
                 <Index each={new Array(props.depth)}>{() =>
                     <span>&nbsp;&nbsp;</span>
                 }</Index>
-                {props.account.name}
+                {props.account.Name}
             </option>
 
-            <For each={props.account.children}>{child =>
+            <For each={props.account.Children}>{child =>
                 <AccountOption account={child} depth={props.depth + 1} />
             }</For>
         </>
     );
 }
 
-const AccountForm: Component<{ accounts: Account[] }> = () => {
+const AccountForm: Component = () => {
     const params = useParams();
     const navigate = useNavigate();
     const { accounts } = useStore();
 
-    const [loading, setLoading] = createSignal(!!params.id);
-
-    let initialData = {
-        name: '',
-        type: '',
-        parent_id: '',
-    };
-
-    onMount(async function() {
-        await accounts.fetchAll();
+    async function initialData() {
+        let initialData = {
+            Name: '',
+            Type: '',
+            ParentID: '',
+        };
 
         if (params.id) {
             const account = await accounts.fetch(parseInt(params.id));
             initialData = { ...account } as any;
-            setLoading(false);
         }
-    });
+
+        return initialData;
+    }
+
+    onMount(accounts.fetchAll);
 
     async function save(data: Record<string, string>) {
         await accounts.save(data);
@@ -50,32 +49,30 @@ const AccountForm: Component<{ accounts: Account[] }> = () => {
     }
 
     return (
-        <Show when={!loading()} fallback={<p>Fetching data...</p>}>
+        <div class="container">
             <Form initialData={initialData} handleSubmit={save}>
-                <div class="container">
-                    <h1>Create an account</h1>
+                <h1>Create an account</h1>
 
-                    <Field label="Name" name="name" />
+                <Field label="Name" name="Name" />
 
-                    <Field label="Type" name="type" options={TYPES} />
+                <Field label="Type" name="Type" options={TYPES} />
 
-                    <Field label="Parent" name="parent_id">
-                        <Select name="parent_id">
-                            <>
-                                <option value="">Select an option</option>
-                                <For each={accounts.hierarchical()}>{account =>
-                                    <AccountOption account={account} depth={0} />
-                                }</For>
-                            </>
-                        </Select>
-                    </Field>
+                <Field label="Parent" name="ParentID">
+                    <Select name="ParentID">
+                        <>
+                            <option value="">Select an option</option>
+                            <For each={accounts.hierarchical()}>{account =>
+                                <AccountOption account={account} depth={0} />
+                            }</For>
+                        </>
+                    </Select>
+                </Field>
 
-                    <button type="submit" class="btn btn-primary">
-                        {params.id ? 'Save' : 'Create'}
-                    </button>
-                </div>
-            </Form>
-        </Show>
+                <button type="submit" class="btn btn-primary">
+                    {params.id ? 'Save' : 'Create'}
+                </button>
+            </Form >
+        </div>
     );
 }
 

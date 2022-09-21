@@ -22,21 +22,21 @@ function create(): AccountModule {
 
         const parents = createMemo(function() {
             return all().filter(function(account: Account) {
-                return account.parent_id == null;
+                return account.ParentID == null;
             });
         });
 
         const hierarchical = createMemo(function() {
             function getChildren(id: number): Account[] {
-                return all().filter(acc => acc.parent_id == id).map(child => ({
+                return all().filter(acc => acc.ParentID == id).map(child => ({
                     ...child,
-                    children: getChildren(child.ID),
+                    Children: getChildren(child.ID),
                 }));
             }
 
             return parents().map((account: Account) => ({
                 ...account,
-                children: getChildren(account.ID),
+                Children: getChildren(account.ID),
             }));
         });
 
@@ -45,9 +45,9 @@ function create(): AccountModule {
 
     function _normalize(data: Record<string, string>) {
         return {
-            name: data.name,
-            type: parseInt(data.type),
-            parent_id: data.parent_id ? parseInt(data.parent_id) : null,
+            Name: data.Name,
+            Type: parseInt(data.Type),
+            ParentID: data.ParentID ? parseInt(data.ParentID) : null,
         };
     }
 

@@ -1,4 +1,4 @@
-import { Accessor, Component, createContext, createMemo, createSignal, For, Match, ParentProps, Show, Switch, useContext } from "solid-js";
+import { Accessor, Component, createContext, createMemo, createSignal, For, Match, onMount, ParentProps, Show, Switch, useContext } from "solid-js";
 import { createStore } from "solid-js/store";
 
 type Form = {
@@ -9,7 +9,7 @@ type Form = {
 }
 
 type FormProps = {
-    initialData: Record<string, any>;
+    initialData: () => Promise<Record<string, any>>;
     handleSubmit: (data: Record<string, any>) => Promise<void>;
 }
 
@@ -58,7 +58,7 @@ type Option = {
     value: string;
 }
 
-export const Select: Component<ParentProps<{ name: string; options?: Option[];[K: string]: any }>> = function(props) {
+export const Select: Component<ParentProps<{ options?: Option[];[K: string]: any }>> = function(props) {
     const { data, getValue, handleChange } = useForm();
 
     const value = createMemo(function() {
@@ -66,7 +66,7 @@ export const Select: Component<ParentProps<{ name: string; options?: Option[];[K
     });
 
     return (
-        <select name={props.name} class="form-control" value={value()} onInput={handleChange}>
+        <select {...props} class="form-control" value={value()} onInput={handleChange}>
             <Switch>
                 <Match when={!props.children}>
                     <option value="">Select an option</option>
@@ -99,9 +99,15 @@ export const Input: Component<{ name: string;[K: string]: any }> = function(prop
     );
 }
 
-export const Form: Component<ParentProps<FormProps>> = (props: any) => {
-    const [data, setData] = createStore({ ...props.initialData });
+export const Form: Component<ParentProps<FormProps>> = (props) => {
+    const [data, setData] = createStore();
+    const [loading, setLoading] = createSignal(true);
     const [errors, setErrors] = createSignal<Record<string, string>>({});
+
+    onMount(async function() {
+        setData(await props.initialData());
+        setLoading(false);
+    });
 
     function handleChange(evt: InputEvent) {
         const input = evt.target as HTMLInputElement
@@ -137,9 +143,11 @@ export const Form: Component<ParentProps<FormProps>> = (props: any) => {
 
     return (
         <FormContext.Provider value={value}>
-            <form onSubmit={handleSubmit}>
-                {props.children}
-            </form>
+            <Show when={!loading()} fallback={<p>Fetching data...</p>}>
+                <form onSubmit={handleSubmit}>
+                    {props.children}
+                </form>
+            </Show>
         </FormContext.Provider>
     );
 }
