@@ -26,9 +26,9 @@ function create(): ProductsModule {
             Purchasable: data.Purchasable,
             Price: parseFloat(data.Price),
             VendorID: parseInt(data.VendorID),
-            RevenueAccountID: parseInt(data.RevenueAccountID),
             InventoryAccountID: parseInt(data.InventoryAccountID),
-            CostOfSaleAccountID: parseInt(data.CostOfSaleAccountID),
+            RevenueAccountID: data.Purchasable ? parseInt(data.RevenueAccountID) : null,
+            CostOfSaleAccountID: data.Purchasable ? parseInt(data.CostOfSaleAccountID) : null,
         };
     }
 

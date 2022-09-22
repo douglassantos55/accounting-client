@@ -1,9 +1,11 @@
+import { useNavigate } from "@solidjs/router";
 import { Component, createMemo, onMount, Show } from "solid-js";
 import { Field, Form, Input, Select, SwitchInput } from "../../components/Form";
 import { useStore } from "../../store";
 import { Account, AccountType, Vendor } from "../../types";
 
 const ProductForm: Component = function() {
+    const navigate = useNavigate();
     const { products, accounts, vendors } = useStore();
 
     onMount(function() {
@@ -35,6 +37,7 @@ const ProductForm: Component = function() {
 
     async function saveProduct(data: Record<string, string>) {
         await products.save(data);
+        navigate('/products');
     }
 
     return (
@@ -68,14 +71,6 @@ const ProductForm: Component = function() {
                             />
                         </Field>
 
-                        <Field label="Revenue account" for="revenue">
-                            <Select
-                                id="revenue"
-                                name="RevenueAccountID"
-                                options={getAccounts(AccountType.Revenue)()}
-                            />
-                        </Field>
-
                         <Field label="Inventory account" for="inventory">
                             <Select
                                 id="inventory"
@@ -85,10 +80,18 @@ const ProductForm: Component = function() {
                         </Field>
 
                         <Show when={data.Purchasable}>
-                            <Field label="Cost of sales account" for="revenue">
+                            <Field label="Revenue account" for="revenue">
                                 <Select
                                     id="revenue"
                                     name="RevenueAccountID"
+                                    options={getAccounts(AccountType.Revenue)()}
+                                />
+                            </Field>
+
+                            <Field label="Cost of sales account" for="revenue">
+                                <Select
+                                    id="revenue"
+                                    name="CostOfSaleAccountID"
                                     options={getAccounts(AccountType.Expense)()}
                                 />
                             </Field>
