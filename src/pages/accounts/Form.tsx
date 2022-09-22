@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "@solidjs/router";
 import { Component, Index, For, onMount } from "solid-js";
-import { Field, Form, Select } from "../../components/Form";
+import { Field, Form, Input, Select } from "../../components/Form";
 import { useStore } from "../../store";
 import { Account, TYPES } from "../../types";
 
@@ -53,12 +53,16 @@ const AccountForm: Component = () => {
             <Form initialData={initialData} handleSubmit={save}>
                 <h1>Create an account</h1>
 
-                <Field label="Name" name="Name" />
+                <Field label="Name" for="name">
+                    <Input name="Name" id="name" />
+                </Field>
 
-                <Field label="Type" name="Type" options={TYPES} />
+                <Field label="Type" for="type">
+                    <Select name="Type" id="type" options={TYPES} />
+                </Field>
 
-                <Field label="Parent" name="ParentID">
-                    <Select name="ParentID">
+                <Field label="Parent" for="parent">
+                    <Select name="ParentID" id="parent">
                         <>
                             <option value="">Select an option</option>
                             <For each={accounts.hierarchical()}>{account =>

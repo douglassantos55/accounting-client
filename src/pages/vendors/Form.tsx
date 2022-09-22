@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "@solidjs/router";
 import { Component } from "solid-js";
-import { Field, Form } from "../../components/Form";
+import { Field, Form, Input } from "../../components/Form";
 import { useStore } from "../../store";
 
 const VendorForm: Component = function() {
@@ -40,15 +40,37 @@ const VendorForm: Component = function() {
             <h1 class="mb-4">Create vendor</h1>
 
             <Form initialData={initialData} handleSubmit={save}>
-                <Field name="Name" label="Name" />
-                <Field name="Cnpj" label="CPF/CNPJ" />
+                <Field label="Name" for="name">
+                    <Input name="Name" id="name" />
+                </Field>
 
-                <Field name="Address.Postcode" label="Postcode" />
-                <Field name="Address.Street" label="Street" />
-                <Field name="Address.Number" label="Number" />
-                <Field name="Address.Neighborhood" label="Neighborhood" />
-                <Field name="Address.City" label="City" />
-                <Field name="Address.State" label="State" />
+                <Field label="CPF/CNPJ" for="cnpj">
+                    <Input name="Cnpj" id="cpnj" />
+                </Field>
+
+                <Field for="postcode" label="Postcode">
+                    <Input name="Address.Postcode" id="postcode" />
+                </Field>
+
+                <Field for="street" label="Street">
+                    <Input name="Address.Street" id="street" />
+                </Field>
+
+                <Field for="number" label="Number">
+                    <Input name="Address.Number" id="number" />
+                </Field>
+
+                <Field for="neighborhood" label="Neighborhood">
+                    <Input name="Address.Neighborhood" id="neighborhood" />
+                </Field>
+
+                <Field for="city" label="City">
+                    <Input name="Address.City" id="city" />
+                </Field>
+
+                <Field for="state" label="State">
+                    <Input name="Address.State" id="state" />
+                </Field>
 
                 <button type="submit" class="btn btn-primary">
                     Save

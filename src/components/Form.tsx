@@ -1,4 +1,4 @@
-import { Accessor, Component, createContext, createMemo, createSignal, For, Match, onMount, ParentProps, Show, Switch, useContext } from "solid-js";
+import { Accessor, Component, createContext, createEffect, createMemo, createSignal, For, JSXElement, Match, onMount, ParentProps, Show, Switch, useContext } from "solid-js";
 import { createStore } from "solid-js/store";
 
 type Form = {
@@ -11,44 +11,24 @@ type Form = {
 type FormProps = {
     initialData: () => Promise<Record<string, any>>;
     handleSubmit: (data: Record<string, any>) => Promise<void>;
+    children?: JSXElement | ((value: Form) => JSXElement);
 }
 
 const FormContext = createContext<Form>();
 
 type FieldProps = {
-    name: string;
+    for?: string;
     label?: string;
-    options?: Option[];
 }
 
 export const Field: Component<ParentProps<FieldProps>> = function(props) {
-    const { errors } = useForm();
-
-    const error = createMemo(function() {
-        return errors()[props.name];
-    });
-
     return (
         <div class="mb-4">
             <Show when={props.label}>
-                <label for={props.name} class="form-label">{props.label}</label>
+                <label for={props.for} class="form-label">{props.label}</label>
             </Show>
 
-            <Switch>
-                <Match when={props.children}>
-                    {props.children}
-                </Match>
-                <Match when={!props.options}>
-                    <Input id={props.name} name={props.name} classList={{ 'is-invalid': error() }} />
-                </Match>
-                <Match when={props.options}>
-                    <Select id={props.name} name={props.name} options={props.options as Option[]} classList={{ 'is-invalid': error() }} />
-                </Match>
-            </Switch>
-
-            <Show when={error()}>
-                <div class="invalid-feedback">{error()}</div>
-            </Show>
+            {props.children}
         </div>
     );
 }
@@ -65,7 +45,7 @@ export const Select: Component<ParentProps<{ options?: Option[];[K: string]: any
         return getValue(props.name, data);
     });
 
-    return (
+    return withError(
         <select {...props} class="form-control" value={value()} onInput={handleChange}>
             <Switch>
                 <Match when={!props.children}>
@@ -82,14 +62,20 @@ export const Select: Component<ParentProps<{ options?: Option[];[K: string]: any
     );
 }
 
-export const Input: Component<{ name: string;[K: string]: any }> = function(props) {
+type InputProps = {
+    name: string;
+    type?: string;
+    [K: string]: any;
+}
+
+export const Input: Component<InputProps> = function(props) {
     const { data, getValue, handleChange } = useForm();
 
     const value = createMemo(function() {
         return getValue(props.name, data);
     });
 
-    return (
+    return withError(
         <input
             {...props}
             class="form-control"
@@ -99,7 +85,61 @@ export const Input: Component<{ name: string;[K: string]: any }> = function(prop
     );
 }
 
-export const Form: Component<ParentProps<FormProps>> = (props) => {
+export const SwitchInput: Component<InputProps> = function(props) {
+    const { data, getValue, handleChange } = useForm();
+
+    const value = createMemo(function() {
+        return !!getValue(props.name, data);
+    });
+
+    return withError(
+        <div class="form-check form-switch">
+            <input
+                {...props}
+                name={props.name}
+                class="form-check-input"
+                type="checkbox"
+                role="switch"
+                checked={value()}
+                onInput={handleChange}
+            />
+            <label class="form-check-label" for={props.id}>
+                {props.label}
+            </label>
+        </div>
+    );
+}
+
+const withError = function(component: JSXElement) {
+    const { errors } = useForm();
+
+    const error = createMemo(function() {
+        const name = (component as HTMLInputElement).name;
+        return errors()[name];
+    });
+
+    createEffect(function() {
+        const field = component as HTMLElement;
+        if (error()) {
+            field.classList.add('is-invalid');
+        } else {
+            field.classList.remove('is-invalid');
+        }
+    });
+
+    return (
+        <>
+            {component}
+            <Show when={error()}>
+                <div class="invalid-feedback">
+                    {error()}
+                </div>
+            </Show>
+        </>
+    );
+}
+
+export const Form: Component<FormProps> = (props) => {
     const [data, setData] = createStore();
     const [loading, setLoading] = createSignal(true);
     const [errors, setErrors] = createSignal<Record<string, string>>({});
@@ -111,8 +151,12 @@ export const Form: Component<ParentProps<FormProps>> = (props) => {
 
     function handleChange(evt: InputEvent) {
         const input = evt.target as HTMLInputElement
+        let value: boolean | string = input.value;
+        if (['checkbox', 'radio'].includes(input.type)) {
+            value = input.checked;
+        }
         // @ts-ignore
-        setData(...input.name.split("."), input.value);
+        setData(...input.name.split("."), value);
     }
 
     async function handleSubmit(evt: SubmitEvent) {
@@ -145,7 +189,9 @@ export const Form: Component<ParentProps<FormProps>> = (props) => {
         <FormContext.Provider value={value}>
             <Show when={!loading()} fallback={<p>Fetching data...</p>}>
                 <form onSubmit={handleSubmit}>
-                    {props.children}
+                    {typeof props.children == "function"
+                        ? props.children(value)
+                        : props.children}
                 </form>
             </Show>
         </FormContext.Provider>

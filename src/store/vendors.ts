@@ -1,11 +1,26 @@
+import { Accessor, createMemo, createRoot } from "solid-js";
 import { makeStore, Module } from ".";
 import axios from "../axios";
 import { Vendor } from "../types";
 
-export type VendorModule = Module<Vendor>;
+type Getters = {
+    all: Accessor<Vendor[]>;
+}
+
+export type VendorModule = Module<Vendor> & Getters;
 
 function create(): VendorModule {
     const store = makeStore<Vendor>();
+
+    const getters = createRoot(function() {
+        const all = createMemo(function() {
+            return store.state.ids.map(function(id: number) {
+                return store.state.byId[id];
+            });
+        });
+
+        return { all };
+    });
 
     async function fetch(id: number) {
         if (!store.state.byId[id]) {
@@ -41,6 +56,7 @@ function create(): VendorModule {
         fetchAll,
         delete: deleteVendor,
         state: store.state,
+        ...getters,
     }
 }
 

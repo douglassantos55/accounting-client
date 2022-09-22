@@ -20,12 +20,24 @@ function create(): ProductsModule {
         }
     }
 
+    function _normalize(data: Record<string, string>) {
+        return {
+            Name: data.Name,
+            Purchasable: data.Purchasable,
+            Price: parseFloat(data.Price),
+            VendorID: parseInt(data.VendorID),
+            RevenueAccountID: parseInt(data.RevenueAccountID),
+            InventoryAccountID: parseInt(data.InventoryAccountID),
+            CostOfSaleAccountID: parseInt(data.CostOfSaleAccountID),
+        };
+    }
+
     async function save(data: Record<string, string>) {
         let product: Product;
         if (data.ID) {
-            product = await axios.put(`/products/${data.ID}`, data);
+            product = await axios.put(`/products/${data.ID}`, _normalize(data));
         } else {
-            product = await axios.post('/products', data);
+            product = await axios.post('/products', _normalize(data));
         }
         store.save(product.ID, product);
     }
