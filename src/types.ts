@@ -62,4 +62,8 @@ export type Product = {
     CostOfSaleAccountID: number;
     InventoryAccountID: number;
     VendorID: number;
+    Vendor?: Vendor;
+    InventoryAccount: Account;
+    RevenueAccount: Account;
+    CostOfSaleAccount: Account;
 }
