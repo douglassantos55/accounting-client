@@ -1,6 +1,15 @@
+import { normalize, schema } from "normalizr";
 import { makeStore, Module } from ".";
 import axios from "../axios";
 import { Customer } from "../types";
+
+export const CustomerEntity = new schema.Entity('customers', undefined, {
+    idAttribute: 'ID',
+});
+
+type Entities = {
+    customers: Record<number, Customer>;
+}
 
 export type CustomerModule = Module<Customer>;
 
@@ -9,14 +18,18 @@ function create(): Module<Customer> {
 
     async function fetch(id: number) {
         if (!store.state.byId[id]) {
-            store.save(id, await axios.get(`/customers/${id}`));
+            const response = await axios.get(`/customers/${id}`);
+            const { entities } = normalize<Customer, Entities>(response, CustomerEntity);
+            store.setEntities(entities.customers);
         }
         return store.state.byId[id];
     }
 
     async function fetchAll() {
         if (!store.state.fetched) {
-            store.set(await axios.get('/customers'));
+            const response = await axios.get('/customers');
+            const { result, entities } = normalize<Customer, Entities>(response, [CustomerEntity]);
+            store.setAll(result, entities.customers);
         }
     }
 
@@ -41,6 +54,7 @@ function create(): Module<Customer> {
         fetchAll,
         save,
         delete: deleteCustomer,
+        setEntities: store.setEntities,
     };
 }
 
