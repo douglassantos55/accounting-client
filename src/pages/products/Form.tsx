@@ -1,10 +1,11 @@
-import { useNavigate } from "@solidjs/router";
+import { useNavigate, useParams } from "@solidjs/router";
 import { Component, createMemo, onMount, Show } from "solid-js";
 import { Field, Form, Input, Select, SwitchInput } from "../../components/Form";
 import { useStore } from "../../store";
 import { Account, AccountType, Vendor } from "../../types";
 
 const ProductForm: Component = function() {
+    const params = useParams();
     const navigate = useNavigate();
     const { products, accounts, vendors } = useStore();
 
@@ -24,7 +25,7 @@ const ProductForm: Component = function() {
     }
 
     async function initialData() {
-        return {
+        let initialData = {
             Name: '',
             Price: '',
             Purchasable: true,
@@ -33,6 +34,13 @@ const ProductForm: Component = function() {
             InventoryAccountID: '',
             VendorID: '',
         };
+
+        if (params.id) {
+            const product = await products.fetch(parseInt(params.id))
+            initialData = JSON.parse(JSON.stringify(product));
+        }
+
+        return initialData;
     }
 
     async function saveProduct(data: Record<string, string>) {
