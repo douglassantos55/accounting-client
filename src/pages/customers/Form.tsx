@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "@solidjs/router";
 import { Component } from "solid-js";
-import { Field, Form } from "../../components/Form";
+import { Field, Form, Input } from "../../components/Form";
 import { useStore } from "../../store";
 
 const CustomerForm: Component = function() {
@@ -42,20 +42,46 @@ const CustomerForm: Component = function() {
             <Form initialData={initialData} handleSubmit={saveCustomer}>
                 <h1 class="mb-4">Create a customer</h1>
 
-                <Field name="Name" label="Name" />
+                <Field for="name" label="Name">
+                    <Input name="Name" id="name" />
+                </Field>
 
-                <Field name="Email" label="Email" />
+                <Field for="email" label="Email">
+                    <Input name="Email" id="email" type="email" />
+                </Field>
 
-                <Field name="Cpf" label="CPF" />
 
-                <Field name="Phone" label="Phone" />
+                <Field for="cpf" label="CPF">
+                    <Input name="Cpf" id="cpf" />
+                </Field>
 
-                <Field name="Address.Postcode" label="Postcode" />
-                <Field name="Address.Street" label="Street" />
-                <Field name="Address.Number" label="Number" />
-                <Field name="Address.Neighborhood" label="Neighborhood" />
-                <Field name="Address.City" label="City" />
-                <Field name="Address.State" label="State" />
+                <Field for="phone" label="Phone">
+                    <Input name="Phone" id="phone" />
+                </Field>
+
+                <Field for="postcode" label="Postcode">
+                    <Input name="Address.Postcode" id="postcode" />
+                </Field>
+
+                <Field for="street" label="Street">
+                    <Input name="Address.Street" id="street" />
+                </Field>
+
+                <Field for="number" label="Number">
+                    <Input name="Address.Number" id="number" />
+                </Field>
+
+                <Field for="neighborhood" label="Neighborhood">
+                    <Input name="Address.Neighborhood" id="neighborhood" />
+                </Field>
+
+                <Field for="city" label="City">
+                    <Input name="Address.City" id="city" />
+                </Field>
+
+                <Field for="state" label="State">
+                    <Input name="Address.State" id="state" />
+                </Field>
 
                 <button type="submit" class="btn btn-primary">
                     {params.id ? 'Save' : 'Create'}
