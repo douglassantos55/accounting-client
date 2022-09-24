@@ -51,7 +51,9 @@ export const Select: Component<ParentProps<{ options?: Option[];[K: string]: any
                 <Match when={!props.children}>
                     <option value="">Select an option</option>
                     <For each={props.options}>{(item: Option) =>
-                        <option value={item.id}>{item.value}</option>
+                        <option value={item.id} selected={item.id == +value()}>
+                            {item.value}
+                        </option>
                     }</For>
                 </Match>
                 <Match when={props.children}>
