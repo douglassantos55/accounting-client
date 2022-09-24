@@ -1,9 +1,19 @@
+import { normalize, schema } from "normalizr";
 import { Accessor, createMemo, createRoot } from "solid-js";
 import { makeStore, Module } from ".";
 import axios from "../axios";
 import { Account } from "../types";
 
+export const AccountEntity = new schema.Entity('accounts', undefined, {
+    idAttribute: 'ID',
+});
+
+type Entities = {
+    accounts: Record<number, Account>;
+}
+
 type Getters = {
+    get: (id: number) => Account;
     all: Accessor<Account[]>;
     hierarchical: Accessor<Account[]>;
 }
@@ -14,9 +24,13 @@ function create(): AccountModule {
     const store = makeStore<Account>();
 
     const getters = createRoot(function() {
+        const get = function(id: number) {
+            return store.state.byId[id];
+        }
+
         const all = createMemo(function() {
             return store.state.ids.map(function(id: number) {
-                return store.state.byId[id];
+                return get(id);
             });
         });
 
@@ -40,7 +54,7 @@ function create(): AccountModule {
             }));
         });
 
-        return { all, hierarchical };
+        return { get, all, hierarchical };
     });
 
     function _normalize(data: Record<string, string>) {
@@ -63,14 +77,18 @@ function create(): AccountModule {
 
     async function fetchAccount(id: number) {
         if (!store.state.byId[id]) {
-            store.save(id, await axios.get(`/accounts/${id}`));
+            const response = await axios.get(`/accounts/${id}`);
+            const { entities } = normalize<Account, Entities>(response, AccountEntity);
+            store.setEntities(entities.accounts);
         }
         return store.state.byId[id];
     }
 
     async function fetchAccounts() {
         if (!store.state.fetched) {
-            store.set(await axios.get('/accounts'));
+            const response = await axios.get('/accounts');
+            const { result, entities } = normalize<Account, Entities>(response, [AccountEntity]);
+            store.setAll(result, entities.accounts);
         }
     }
 
@@ -85,6 +103,7 @@ function create(): AccountModule {
         delete: deleteAccount,
         fetchAll: fetchAccounts,
         save: saveAccount,
+        setEntities: store.setEntities,
         ...getters,
     }
 }

@@ -13,9 +13,10 @@ type State<T> = {
 
 type Store<T> = {
     state: State<T>;
-    set: (items: T[]) => void;
     remove: (id: number) => void;
     save: (id: number, item: T) => void;
+    setEntities: (items: Record<number, T>) => void;
+    setAll: (ids: number[], items: Record<number, T>) => void;
 }
 
 export type Module<T> = {
@@ -24,6 +25,7 @@ export type Module<T> = {
     fetch: (id: number) => Promise<T>;
     delete: (id: number) => Promise<void>;
     save: (data: Record<string, string>) => Promise<void>;
+    setEntities: (items: Record<number, T>) => void;
     [K: string]: any;
 }
 
@@ -34,20 +36,21 @@ export function makeStore<T>(): Store<T> {
         fetched: false,
     })
 
-    function save(id: number, item: T) {
-        setState("byId", id, item);
-        setState("ids", function(ids: number[]) {
-            !ids.includes(id) && ids.push(id);
-            return [...ids];
+    function setEntities(entities: Record<number, T>) {
+        setState('byId', function(items: Record<number, T>) {
+            return { ...items, ...entities };
         });
     }
 
-    function set(items: T[]) {
+    function setAll(ids: number[], entities: Record<number, T>) {
+        setEntities(entities);
         setState('fetched', true);
-        for (const item of items as { ID: number }[]) {
-            setState("byId", item.ID, item as T);
-            setState("ids", ids => [...ids, item.ID]);
-        }
+        setState('ids', (prev: number[]) => [...prev, ...ids]);
+    }
+
+    function save(id: number, item: T) {
+        setState('byId', id, item);
+        setState('ids', (prev: number[]) => [...prev, id]);
     }
 
     function remove(id: number) {
@@ -58,7 +61,7 @@ export function makeStore<T>(): Store<T> {
         setState("byId", id, undefined as T);
     }
 
-    return { state, set, remove, save }
+    return { state, save, setEntities, setAll, remove }
 }
 
 type AppStore = {

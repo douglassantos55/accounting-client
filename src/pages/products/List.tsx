@@ -48,7 +48,7 @@ const List: Component = function() {
                             </tr>
                         </Match>
                         <Match when={products.state.ids.length > 0}>
-                            <For each={Object.values(products.state.byId)}>{product => (
+                            <For each={products.all()}>{product => (
                                 <tr>
                                     <td>{product.Name}</td>
                                     <td>{product.Price}</td>
