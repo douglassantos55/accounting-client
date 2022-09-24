@@ -67,3 +67,12 @@ export type Product = {
     RevenueAccount: Account;
     CostOfSaleAccount: Account;
 }
+
+export type Service = {
+    ID: number;
+    Name: string;
+    RevenueAccountID: number;
+    CostOfServiceAccountID: number;
+    RevenueAccount: Account;
+    CostOfServiceAccount: Account;
+}
