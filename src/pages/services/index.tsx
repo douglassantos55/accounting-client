@@ -9,6 +9,7 @@ const Services: Component = function() {
         <>
             <Route path="/" component={List} />
             <Route path="/create" component={Form} />
+            <Route path="/edit/:id" component={Form} />
         </>
     );
 }

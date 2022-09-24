@@ -1,4 +1,4 @@
-import { useNavigate } from "@solidjs/router";
+import { useNavigate, useParams } from "@solidjs/router";
 import { Component, onMount } from "solid-js";
 import { Field, Form, Input, Select } from "../../components/Form";
 import { useStore } from "../../store";
@@ -7,15 +7,24 @@ import { AccountType } from "../../types";
 const ServiceForm: Component = function() {
     const { accounts, services } = useStore();
     const navigate = useNavigate();
+    const params = useParams();
 
     onMount(accounts.fetchAll);
 
     async function initialData() {
-        return {
+        let initialData = {
             Name: '',
             RevenueAccountID: '',
             CostOfServiceAccountID: '',
         };
+
+        if (params.id) {
+            const service = await services.fetch(parseInt(params.id));
+            console.log(service);
+            initialData = JSON.parse(JSON.stringify(service));
+        }
+
+        return initialData;
     }
 
     async function saveService(data: Record<string, string>) {

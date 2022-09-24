@@ -36,7 +36,6 @@ function create(): ServiceModule {
                 RevenueAccount: accounts.get(item.RevenueAccountID),
                 CostOfServiceAccount: accounts.get(item.CostOfServiceAccountID),
             }
-            console.log(res);
             return res;
         }
 
@@ -50,14 +49,14 @@ function create(): ServiceModule {
     });
 
     async function fetch(id: number) {
-        if (!getters.get(id)) {
+        if (!store.state.byId[id]) {
             const response = await axios.get(`/services/${id}`);
             const { entities } = normalize<Service, Entities>(response, ServiceEntity);
 
             accounts.setEntities(entities.accounts);
             store.setEntities(entities.services);
         }
-        return getters.get(id);
+        return store.state.byId[id];
     }
 
     async function fetchAll() {

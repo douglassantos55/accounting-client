@@ -51,12 +51,14 @@ export function makeStore<T>(): Store<T> {
 
     function save(id: number, item: T) {
         setState('byId', id, item);
-        setState('ids', function(prev: number[]) {
-            if (prev.includes(id)) {
-                return prev;
-            }
-            return [...prev, id]
-        });
+        if (state.fetched) {
+            setState('ids', function(prev: number[]) {
+                if (prev.includes(id)) {
+                    return prev;
+                }
+                return [...prev, id]
+            });
+        }
     }
 
     function remove(id: number) {
