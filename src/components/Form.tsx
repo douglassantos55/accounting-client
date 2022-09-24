@@ -34,15 +34,28 @@ export const Field: Component<ParentProps<FieldProps>> = function(props) {
 }
 
 type Option = {
-    id: number;
     value: string;
+    text: string;
 }
 
-export const Select: Component<ParentProps<{ options?: Option[];[K: string]: any }>> = function(props) {
+type SelectProps = {
+    options?: any[];
+    valueBy?: string;
+    textBy?: string;
+    [K: string]: any;
+}
+
+export const Select: Component<ParentProps<SelectProps>> = function(props) {
     const { data, getValue, handleChange } = useForm();
 
     const value = createMemo(function() {
         return getValue(props.name, data);
+    });
+
+    const options: Accessor<Option[] | undefined> = createMemo(function() {
+        return props.options?.map(function(item: Record<string, any>) {
+            return { value: item[props.valueBy || 'ID'], text: item[props.textBy || 'Name'] };
+        });
     });
 
     return withError(
@@ -50,9 +63,9 @@ export const Select: Component<ParentProps<{ options?: Option[];[K: string]: any
             <Switch>
                 <Match when={!props.children}>
                     <option value="">Select an option</option>
-                    <For each={props.options}>{(item: Option) =>
-                        <option value={item.id} selected={item.id == +value()}>
-                            {item.value}
+                    <For each={options()}>{(item: Option) =>
+                        <option value={item.value} selected={item.value == value()}>
+                            {item.text}
                         </option>
                     }</For>
                 </Match>

@@ -1,8 +1,8 @@
 import { useNavigate, useParams } from "@solidjs/router";
-import { Component, createMemo, onMount, Show } from "solid-js";
+import { Component, onMount, Show } from "solid-js";
 import { Field, Form, Input, Select, SwitchInput } from "../../components/Form";
 import { useStore } from "../../store";
-import { Account, AccountType, Vendor } from "../../types";
+import { AccountType } from "../../types";
 
 const ProductForm: Component = function() {
     const params = useParams();
@@ -13,16 +13,6 @@ const ProductForm: Component = function() {
         accounts.fetchAll();
         vendors.fetchAll();
     });
-
-    function getAccounts(type: AccountType) {
-        return createMemo(function() {
-            return accounts.all().filter(function(account: Account) {
-                return account.Type == type;
-            }).map(function(account: Account) {
-                return { id: account.ID, value: account.Name };
-            });
-        });
-    }
 
     async function initialData() {
         let initialData = {
@@ -67,7 +57,7 @@ const ProductForm: Component = function() {
                             <Select
                                 id="vendor"
                                 name="VendorID"
-                                options={vendors.all().map((vendor: Vendor) => ({ id: vendor.ID, value: vendor.Name }))}
+                                options={vendors.all()}
                             />
                         </Field>
 
@@ -83,7 +73,7 @@ const ProductForm: Component = function() {
                             <Select
                                 id="inventory"
                                 name="InventoryAccountID"
-                                options={getAccounts(AccountType.Asset)()}
+                                options={accounts.type(AccountType.Asset)}
                             />
                         </Field>
 
@@ -92,7 +82,7 @@ const ProductForm: Component = function() {
                                 <Select
                                     id="revenue"
                                     name="RevenueAccountID"
-                                    options={getAccounts(AccountType.Revenue)()}
+                                    options={accounts.type(AccountType.Revenue)}
                                 />
                             </Field>
 
@@ -100,7 +90,7 @@ const ProductForm: Component = function() {
                                 <Select
                                     id="revenue"
                                     name="CostOfSaleAccountID"
-                                    options={getAccounts(AccountType.Expense)()}
+                                    options={accounts.type(AccountType.Expense)}
                                 />
                             </Field>
                         </Show>

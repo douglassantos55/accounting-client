@@ -2,7 +2,7 @@ import { normalize, schema } from "normalizr";
 import { Accessor, createMemo, createRoot } from "solid-js";
 import { makeStore, Module } from ".";
 import axios from "../axios";
-import { Account } from "../types";
+import { Account, AccountType } from "../types";
 
 export const AccountEntity = new schema.Entity('accounts', undefined, {
     idAttribute: 'ID',
@@ -13,9 +13,10 @@ type Entities = {
 }
 
 type Getters = {
-    get: (id: number) => Account;
     all: Accessor<Account[]>;
+    get: (id: number) => Account;
     hierarchical: Accessor<Account[]>;
+    type: (type: AccountType) => Account[];
 }
 
 export type AccountModule = Module<Account> & Getters;
@@ -54,7 +55,13 @@ function create(): AccountModule {
             }));
         });
 
-        return { get, all, hierarchical };
+        const type = function(type: AccountType) {
+            return all().filter(function(account: Account) {
+                return account.Type == type;
+            });
+        }
+
+        return { get, all, type, hierarchical };
     });
 
     function _normalize(data: Record<string, string>) {
