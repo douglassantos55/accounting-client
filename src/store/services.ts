@@ -26,8 +26,18 @@ function create(): ServiceModule {
     const store = makeStore<Service>();
 
     const getters = createRoot(function() {
-        function get(id: number) {
-            return store.state.byId[id];
+        function get(id: number): Service {
+            return withRelations(store.state.byId[id]);
+        }
+
+        function withRelations(item: Service): Service {
+            const res = {
+                ...item,
+                RevenueAccount: accounts.get(item.RevenueAccountID),
+                CostOfServiceAccount: accounts.get(item.CostOfServiceAccountID),
+            }
+            console.log(res);
+            return res;
         }
 
         const all = createMemo(function() {
@@ -44,8 +54,8 @@ function create(): ServiceModule {
             const response = await axios.get(`/services/${id}`);
             const { entities } = normalize<Service, Entities>(response, ServiceEntity);
 
-            store.setEntities(entities.services);
             accounts.setEntities(entities.accounts);
+            store.setEntities(entities.services);
         }
         return getters.get(id);
     }
@@ -55,8 +65,8 @@ function create(): ServiceModule {
             const response = await axios.get('/services');
             const { result, entities } = normalize<Service, Entities>(response, [ServiceEntity]);
 
-            store.setAll(result, entities.services);
             accounts.setEntities(entities.accounts);
+            store.setAll(result, entities.services);
         }
     }
 
