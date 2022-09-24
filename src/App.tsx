@@ -21,13 +21,13 @@ const App: Component = () => {
                                 <Link href="/accounts" class="nav-link">Accounts</Link>
                             </li>
                             <li class="nav-item">
-                                <a href="/customers" class="nav-link">Customers</a>
+                                <Link href="/customers" class="nav-link">Customers</Link>
                             </li>
                             <li class="nav-item">
-                                <a href="/products" class="nav-link">Products</a>
+                                <Link href="/products" class="nav-link">Products</Link>
                             </li>
                             <li class="nav-item">
-                                <a href="/vendors" class="nav-link">Vendors</a>
+                                <Link href="/vendors" class="nav-link">Vendors</Link>
                             </li>
                             <li class="nav-item">
                                 <Link href="/services" class="nav-link">Services</Link>
