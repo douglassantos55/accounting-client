@@ -80,13 +80,13 @@ export type Service = {
 export type Purchase = {
     ID: number;
     Qty: number;
-    PaymentDate: Date;
+    PaymentDate: string;
     Price: string;
     Paid: boolean;
     ProductID: number;
     PaymentAccountID: number;
     PayableAccountID: number;
     Product: Product;
-    PaymentAccount: Account;
-    PayableAccount: Account;
+    PaymentAccount?: Account;
+    PayableAccount?: Account;
 }

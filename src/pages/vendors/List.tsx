@@ -25,7 +25,7 @@ const List: Component = function() {
                             <tr><td>Fetching data, please wait...</td></tr>
                         </Match>
                         <Match when={vendors.state.ids.length == 0}>
-                            <tr><td>No customers created yet.</td></tr>
+                            <tr><td>No vendors created yet.</td></tr>
                         </Match>
                         <Match when={vendors.state.ids.length > 0}>
                             <For each={Object.values(vendors.state.byId)}>{vendor => (

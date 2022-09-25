@@ -1,4 +1,5 @@
 import { normalize, schema } from "normalizr";
+import { Accessor, createMemo, createRoot } from "solid-js";
 import { makeStore, Module } from ".";
 import axios from "../axios";
 import { Account, Product, Purchase } from "../types";
@@ -19,8 +20,36 @@ export const PurchaseEntity = new schema.Entity('purchases', {
     PayableAccount: AccountEntity,
 }, { idAttribute: 'ID' });
 
-function create(): PurchaseModule {
+type Getters = {
+    all: Accessor<Purchase[]>;
+    get: (id: number) => Purchase;
+}
+
+function create(): PurchaseModule & Getters {
     const store = makeStore<Purchase>();
+
+    const getters = createRoot(function() {
+        const get = function(id: number) {
+            return withRelations(store.state.byId[id]);
+        }
+
+        function withRelations(purchase: Purchase) {
+            return {
+                ...purchase,
+                Product: products.get(purchase.ProductID),
+                PaymentAccount: accounts.get(purchase.PaymentAccountID),
+                PayableAccount: accounts.get(purchase.PayableAccountID),
+            }
+        }
+
+        const all = createMemo(function() {
+            return store.state.ids.map(function(id: number) {
+                return get(id);
+            });
+        });
+        return { all, get };
+
+    });
 
     async function fetch(id: number): Promise<Purchase> {
         if (!store.state.byId[id]) {
@@ -36,7 +65,7 @@ function create(): PurchaseModule {
 
     async function fetchAll() {
         if (!store.state.fetched) {
-            const response = axios.get('/purchases');
+            const response = await axios.get('/purchases');
             const { result, entities } = normalize<Purchase, Entities>(response, [PurchaseEntity]);
 
             accounts.setEntities(entities.accounts);
@@ -79,6 +108,7 @@ function create(): PurchaseModule {
         state: store.state,
         delete: deletePurchase,
         setEntities: store.setEntities,
+        ...getters,
     };
 }
 export default create();

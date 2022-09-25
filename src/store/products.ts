@@ -23,6 +23,7 @@ type Entities = {
 
 type Getters = {
     all: Accessor<Product[]>;
+    get: (id: number) => Product;
 }
 
 export type ProductsModule = Module<Product> & Getters;
@@ -41,13 +42,17 @@ function create(): ProductsModule {
             };
         };
 
+        const get = function(id: number) {
+            return withRelations(store.state.byId[id]);
+        }
+
         const all = createMemo(function() {
             return store.state.ids.map(function(id: number) {
-                return withRelations(store.state.byId[id]);
+                return get(id);
             });
         });
 
-        return { all };
+        return { all, get };
     });
 
     async function fetch(id: number) {
