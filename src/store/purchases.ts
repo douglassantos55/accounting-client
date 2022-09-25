@@ -63,6 +63,7 @@ function create(): PurchaseModule {
             ProductID: parseInt(data.ProductID),
             PaymentAccountID: parseInt(data.PaymentAccountID),
             PayableAccountID: parseInt(data.PayableAccountID),
+            PaymentDate: new Date(data.PaymentDate).toISOString(),
         };
     }
 
