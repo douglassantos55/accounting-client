@@ -6,7 +6,7 @@ import { Account, Product, Vendor } from "../types";
 import accounts, { AccountEntity } from "./accounts";
 import vendors, { VendorEntity } from "./vendors";
 
-const ProductEntity = new schema.Entity('products', {
+export const ProductEntity = new schema.Entity('products', {
     Vendor: VendorEntity,
     RevenueAccount: AccountEntity,
     InventoryAccount: AccountEntity,

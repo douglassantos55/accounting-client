@@ -76,3 +76,17 @@ export type Service = {
     RevenueAccount: Account;
     CostOfServiceAccount: Account;
 }
+
+export type Purchase = {
+    ID: number;
+    Qty: number;
+    PaymentDate: Date;
+    Price: string;
+    Paid: boolean;
+    ProductID: number;
+    PaymentAccountID: number;
+    PayableAccountID: number;
+    Product: Product;
+    PaymentAccount: Account;
+    PayableAccount: Account;
+}
