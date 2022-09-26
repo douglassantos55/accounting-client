@@ -53,7 +53,7 @@ function create(): PurchaseModule & Getters {
 
     async function fetch(id: number): Promise<Purchase> {
         if (!store.state.byId[id]) {
-            const response = axios.get(`/purchases/${id}`);
+            const response = await axios.get(`/purchases/${id}`);
             const { entities } = normalize<Purchase, Entities>(response, PurchaseEntity);
 
             accounts.setEntities(entities.accounts);
@@ -90,8 +90,8 @@ function create(): PurchaseModule & Getters {
             Qty: parseInt(data.Qty),
             Price: parseFloat(data.Price),
             ProductID: parseInt(data.ProductID),
+            PayableAccountID: parseInt(data.PayableAccountID),
             PaymentAccountID: data.Paid ? parseInt(data.PaymentAccountID) : null,
-            PayableAccountID: !data.Paid ? parseInt(data.PayableAccountID) : null,
             PaymentDate: data.Paid ? new Date(data.PaymentDate).toISOString() : null,
         };
     }

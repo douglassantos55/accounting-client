@@ -1,10 +1,11 @@
-import { useNavigate } from "@solidjs/router";
+import { useNavigate, useParams } from "@solidjs/router";
 import { Component, onMount, Show } from "solid-js";
 import { Field, Form, Input, Select, SwitchInput } from "../../components/Form";
 import { useStore } from "../../store";
 import { AccountType } from "../../types";
 
 const PurchaseForm: Component = function() {
+    const params = useParams();
     const navigate = useNavigate();
     const { purchases, products, accounts } = useStore();
 
@@ -14,7 +15,7 @@ const PurchaseForm: Component = function() {
     });
 
     async function initialData() {
-        return {
+        let initialData = {
             Qty: '',
             Price: '',
             Paid: false,
@@ -23,6 +24,13 @@ const PurchaseForm: Component = function() {
             PaymentAccountID: '',
             ProductID: '',
         };
+
+        if (params.id) {
+            const purchase = await purchases.fetch(parseInt(params.id));
+            initialData = JSON.parse(JSON.stringify(purchase));
+        }
+
+        return initialData;
     }
 
     async function savePurchase(data: Record<string, string>) {
@@ -53,6 +61,15 @@ const PurchaseForm: Component = function() {
                             <SwitchInput id="paid" name="Paid" label="Enable if the purchase was already paid" />
                         </Field>
 
+                        <Show when={data.PayableAccountID || !data.Paid}>
+                            <Field label="Payable account" for="payable-account">
+                                <Select
+                                    options={accounts.type(AccountType.Liability)}
+                                    name="PayableAccountID"
+                                />
+                            </Field>
+                        </Show>
+
                         <Show when={data.Paid}>
                             <Field label="Payment date" for="payment-date">
                                 <Input id="payment-date" name="PaymentDate" type="date" />
@@ -62,15 +79,6 @@ const PurchaseForm: Component = function() {
                                 <Select
                                     options={accounts.type(AccountType.Asset)}
                                     name="PaymentAccountID"
-                                />
-                            </Field>
-                        </Show>
-
-                        <Show when={!data.Paid}>
-                            <Field label="Payable account" for="payable-account">
-                                <Select
-                                    options={accounts.type(AccountType.Liability)}
-                                    name="PayableAccountID"
                                 />
                             </Field>
                         </Show>
