@@ -90,9 +90,9 @@ function create(): PurchaseModule & Getters {
             Qty: parseInt(data.Qty),
             Price: parseFloat(data.Price),
             ProductID: parseInt(data.ProductID),
-            PaymentAccountID: parseInt(data.PaymentAccountID),
-            PayableAccountID: parseInt(data.PayableAccountID),
-            PaymentDate: new Date(data.PaymentDate).toISOString(),
+            PaymentAccountID: data.Paid ? parseInt(data.PaymentAccountID) : null,
+            PayableAccountID: !data.Paid ? parseInt(data.PayableAccountID) : null,
+            PaymentDate: data.Paid ? new Date(data.PaymentDate).toISOString() : null,
         };
     }
 
