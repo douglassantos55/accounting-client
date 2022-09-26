@@ -90,3 +90,10 @@ export type Purchase = {
     PaymentAccount?: Account;
     PayableAccount?: Account;
 }
+
+export type Transaction = {
+    ID: number;
+    Value: number;
+    Account: Account;
+    AccountID: number;
+}
