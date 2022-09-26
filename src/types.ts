@@ -91,6 +91,12 @@ export type Purchase = {
     PayableAccount?: Account;
 }
 
+export type Entry = {
+    ID: number;
+    Description: string;
+    Transactions: Transaction[] | number[];
+}
+
 export type Transaction = {
     ID: number;
     Value: number;
