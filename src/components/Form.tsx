@@ -185,11 +185,13 @@ export const Form: Component<FormProps> = (props) => {
     }
 
     function getValue(name: string, object: Record<string, any>): string {
-        const [obj, path] = name.split(".", 2);
-        if (path) {
-            return getValue(path, object[obj]);
+        const index = name.indexOf(".");
+        if (index === -1) {
+            return object[name];
         }
-        return object[obj];
+        const obj = name.substring(0, index);
+        const path = name.substring(index + 1);
+        return getValue(path, object[obj]);
     }
 
 
