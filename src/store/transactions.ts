@@ -4,7 +4,7 @@ import { Transaction } from "../types";
 import accounts, { AccountEntity } from "./accounts";
 
 export type TransactionModule = {
-    get: (id: number) => Transaction;
+    get: (id: number) => Transaction | undefined;
     setEntities: (entities: Record<number, Transaction>) => void;
 }
 
@@ -22,7 +22,10 @@ function create(): TransactionModule {
         };
     }
 
-    function get(id: number): Transaction {
+    function get(id: number) {
+        if (!store.state.byId[id]) {
+            return;
+        }
         return withRelations(store.state.byId[id]);
     }
 

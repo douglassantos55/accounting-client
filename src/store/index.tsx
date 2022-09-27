@@ -43,12 +43,23 @@ export function makeStore<T>(): Store<T> {
         setState('byId', function(items: Record<number, T>) {
             return { ...items, ...entities };
         });
+        setState('ids', (prev: number[]) => {
+            let next = [...prev];
+            if (entities) {
+                for (const item of Object.values(entities)) {
+                    if (!next.includes((item as any).ID)) {
+                        next.push((item as any).ID);
+                    }
+                }
+            }
+            return next;
+        });
     }
 
     function setAll(ids: number[], entities: Record<number, T>) {
         setEntities(entities);
+        setState('ids', ids);
         setState('fetched', true);
-        setState('ids', (prev: number[]) => [...prev, ...ids]);
     }
 
     function save(id: number, item: T) {

@@ -89,6 +89,8 @@ export type Purchase = {
     Product: Product;
     PaymentAccount?: Account;
     PayableAccount?: Account;
+    PaymentEntryID?: number;
+    PayableEntryID?: number;
 }
 
 export type Entry = {
