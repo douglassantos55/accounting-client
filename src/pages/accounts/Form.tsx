@@ -1,25 +1,9 @@
 import { useNavigate, useParams } from "@solidjs/router";
-import { Component, Index, For, onMount } from "solid-js";
+import { Component, For, onMount } from "solid-js";
+import AccountOption from "../../components/AccountOption";
 import { Field, Form, Input, Select } from "../../components/Form";
 import { useStore } from "../../store";
-import { Account, TYPES } from "../../types";
-
-const AccountOption: Component<{ account: Account, depth: number }> = (props) => {
-    return (
-        <>
-            <option value={props.account.ID}>
-                <Index each={new Array(props.depth)}>{() =>
-                    <span>&nbsp;&nbsp;</span>
-                }</Index>
-                {props.account.Name}
-            </option>
-
-            <For each={props.account.Children}>{child =>
-                <AccountOption account={child} depth={props.depth + 1} />
-            }</For>
-        </>
-    );
-}
+import { TYPES } from "../../types";
 
 const AccountForm: Component = () => {
     const params = useParams();
