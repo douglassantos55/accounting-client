@@ -75,12 +75,30 @@ function create(): EntriesModule {
 
     async function save(data: Record<string, string>) {
         let entry: Entry;
+
         if (data.ID) {
-            entry = await axios.put(`/entries/${data.ID}`);
+            entry = await axios.put(`/entries/${data.ID}`, _normalize(data));
         } else {
-            entry = await axios.post('/entries');
+            entry = await axios.post('/entries', _normalize(data));
         }
+
+        const { entities } = normalize<Entry, Entities>(entry, EntryEntity);
+        accounts.setEntities(entities.accounts);
+        transactions.setEntities(entities.transactions);
+
         store.save(entry.ID, entry);
+    }
+
+    function _normalize(data: Record<string, any>) {
+        return {
+            Description: data.Description,
+            Transactions: data.Transactions.map(function(item: Record<string, string>) {
+                return {
+                    Value: parseFloat(item.Value),
+                    AccountID: parseInt(item.AccountID),
+                };
+            }),
+        };
     }
 
     async function deleteEntry(id: number) {

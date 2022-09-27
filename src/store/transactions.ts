@@ -23,9 +23,6 @@ function create(): TransactionModule {
     }
 
     function get(id: number) {
-        if (!store.state.byId[id]) {
-            return;
-        }
         return withRelations(store.state.byId[id]);
     }
 
