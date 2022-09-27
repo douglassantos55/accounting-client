@@ -8,6 +8,7 @@ const Vendors = lazy(() => import('./pages/vendors'));
 const Products = lazy(() => import('./pages/products'));
 const Services = lazy(() => import('./pages/services'));
 const Purchases = lazy(() => import('./pages/purchases'));
+const Entries = lazy(() => import('./pages/entries'));
 
 const App: Component = () => {
     return (
@@ -38,6 +39,9 @@ const App: Component = () => {
                             </li>
                             <li class="nav-item">
                                 <a href="#" class="nav-link">Sales</a>
+                            </li>
+                            <li class="nav-item">
+                                <Link href="/entries" class="nav-link">Entries</Link>
                             </li>
                         </ul>
                     </div>
@@ -70,6 +74,10 @@ const App: Component = () => {
 
                     <Route path="/purchases">
                         <Purchases />
+                    </Route>
+
+                    <Route path="/entries">
+                        <Entries />
                     </Route>
                 </Routes>
             </main>
