@@ -50,7 +50,7 @@ const AccountForm: Component = () => {
                         <>
                             <option value="">Select an option</option>
                             <For each={accounts.hierarchical()}>{account =>
-                                <AccountOption account={account} depth={0} />
+                                <AccountOption account={account} depth={0} name="ParentID" />
                             }</For>
                         </>
                     </Select>

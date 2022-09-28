@@ -3,6 +3,7 @@ import { Component, For, onMount } from "solid-js";
 import AccountOption from "../../components/AccountOption";
 import { Field, Form, Input, Select } from "../../components/Form";
 import { useStore } from "../../store";
+import { Account } from "../../types";
 
 const EntryForm: Component = function() {
     const params = useParams();
@@ -48,8 +49,8 @@ const EntryForm: Component = function() {
                                     <Select name={`Transactions.${i()}.AccountID`}>
                                         <>
                                             <option value="">Select an option</option>
-                                            <For each={accounts.hierarchical()}>{account =>
-                                                <AccountOption account={account} depth={0} />
+                                            <For each={accounts.hierarchical()}>{(account: Account) =>
+                                                <AccountOption account={account} depth={0} selected={data.Transactions[i()].AccountID} />
                                             }</For>
                                         </>
                                     </Select>
