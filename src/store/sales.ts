@@ -89,7 +89,7 @@ function create(): SaleModule {
         if (data.ID) {
             sale = await axios.put(`/sales/${data.ID}`, _normalize(data));
         } else {
-            sale = await axios.post(`/sales/${data.ID}`, _normalize(data));
+            sale = await axios.post('/sales', _normalize(data));
         }
         store.save(sale.ID, sale);
     }

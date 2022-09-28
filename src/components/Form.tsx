@@ -5,6 +5,8 @@ type Form = {
     data: Record<string, any>;
     errors: Accessor<Record<string, string>>;
     handleChange: (evt: InputEvent) => void;
+    remove: (name: string, idx: number) => void;
+    add: (name: string, obj: Record<string, any>) => void;
     getValue: (path: string, data: Record<string, any>) => string;
 }
 
@@ -155,7 +157,7 @@ const withError = function(component: JSXElement) {
 }
 
 export const Form: Component<FormProps> = (props) => {
-    const [data, setData] = createStore();
+    const [data, setData] = createStore<Record<string, any>>();
     const [loading, setLoading] = createSignal(true);
     const [errors, setErrors] = createSignal<Record<string, string>>({});
 
@@ -194,9 +196,27 @@ export const Form: Component<FormProps> = (props) => {
         return getValue(path, object[obj]);
     }
 
+    function add(name: string, obj: Record<string, any>) {
+        if (!Array.isArray(data[name])) {
+            throw new Error(`Key "${name}" is not an array on object`, data);
+        }
+        setData(name, (data: any[]) => [...data, obj]);
+    }
+
+    function remove(name: string, idx: number) {
+        if (!Array.isArray(data[name])) {
+            throw new Error(`Key "${name}" is not an array on object`, data);
+        }
+        setData(name, (data: any[]) => {
+            data.splice(idx, 1);
+            return [...data];
+        });
+    }
 
     const value: Form = {
+        add,
         data,
+        remove,
         errors,
         handleChange,
         getValue,
