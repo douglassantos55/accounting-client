@@ -59,7 +59,7 @@ function create(): EntriesModule {
             accounts.setEntities(entities.accounts);
             store.setEntities(entities.entries);
         }
-        return store.state.byId[id];
+        return getters.get(id);
     }
 
     async function fetchAll() {
