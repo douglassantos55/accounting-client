@@ -9,6 +9,7 @@ const Products = lazy(() => import('./pages/products'));
 const Services = lazy(() => import('./pages/services'));
 const Purchases = lazy(() => import('./pages/purchases'));
 const Entries = lazy(() => import('./pages/entries'));
+const Sales = lazy(() => import('./pages/sales'));
 
 const App: Component = () => {
     return (
@@ -38,7 +39,7 @@ const App: Component = () => {
                                 <Link href="/purchases" class="nav-link">Purchases</Link>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="nav-link">Sales</a>
+                                <Link href="/sales" class="nav-link">Sales</Link>
                             </li>
                             <li class="nav-item">
                                 <Link href="/entries" class="nav-link">Entries</Link>
@@ -78,6 +79,10 @@ const App: Component = () => {
 
                     <Route path="/entries">
                         <Entries />
+                    </Route>
+
+                    <Route path="/sales">
+                        <Sales />
                     </Route>
                 </Routes>
             </main>

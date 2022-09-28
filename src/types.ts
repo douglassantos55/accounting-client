@@ -112,9 +112,9 @@ export type Sale = {
     Customer: Customer;
     CustomerID: number;
     Items: number[] | SaleItem[];
-    PaymentAccount: Account;
+    PaymentAccount?: Account;
     PaymentAccountID: number;
-    ReceivableAccount: Account;
+    ReceivableAccount?: Account;
     ReceivableAccountID: number;
 }
 

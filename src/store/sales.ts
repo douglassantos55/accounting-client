@@ -1,5 +1,5 @@
 import { normalize, schema } from "normalizr";
-import { createRoot } from "solid-js";
+import { Accessor, createRoot } from "solid-js";
 import { makeStore, Module } from ".";
 import axios from "../axios";
 import { Account, Customer, Product, Sale, SaleItem } from "../types";
@@ -9,6 +9,7 @@ import products from "./products";
 import sale_items, { SaleItemEntity } from "./sale_items";
 
 type Getters = {
+    all: Accessor<Sale[]>;
     get: (id: number) => Sale;
 }
 
@@ -38,6 +39,12 @@ function create(): SaleModule {
             return withRelations(store.state.byId[id]);
         }
 
+        function all() {
+            return store.state.ids.map(function(id: number) {
+                return get(id);
+            });
+        }
+
         function withRelations(sale: Sale): Sale {
             return {
                 ...sale,
@@ -50,7 +57,7 @@ function create(): SaleModule {
             };
         }
 
-        return { get };
+        return { all, get };
     });
 
 
