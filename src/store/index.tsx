@@ -5,6 +5,7 @@ import customers, { CustomerModule } from "./customers";
 import entries, { EntriesModule } from "./entries";
 import products, { ProductsModule } from "./products";
 import purchases, { PurchaseModule } from "./purchases";
+import sales, { SaleModule } from "./sales";
 import services, { ServiceModule } from "./services";
 import vendors, { VendorModule } from "./vendors";
 
@@ -93,6 +94,7 @@ type AppStore = {
     services: ServiceModule;
     purchases: PurchaseModule;
     entries: EntriesModule;
+    sales: SaleModule;
 }
 
 const StoreContext = createContext<AppStore>();
@@ -106,6 +108,7 @@ export function Store(props: ParentProps) {
         services,
         purchases,
         entries,
+        sales,
     }
 
     return (

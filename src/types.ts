@@ -105,3 +105,24 @@ export type Transaction = {
     Account: Account;
     AccountID: number;
 }
+
+export type Sale = {
+    ID: number;
+    Paid: boolean;
+    Customer: Customer;
+    CustomerID: number;
+    Items: number[] | SaleItem[];
+    PaymentAccount: Account;
+    PaymentAccountID: number;
+    ReceivableAccount: Account;
+    ReceivableAccountID: number;
+}
+
+export type SaleItem = {
+    ID: number;
+    Qty: number;
+    Price: number;
+    Product: Product;
+    ProductID: number;
+    SaleID: number;
+}
