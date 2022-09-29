@@ -95,11 +95,13 @@ function create(): PurchaseModule & Getters {
         } else {
             purchase = await axios.post('/purchases', _normalize(data));
         }
+
         const { entities } = normalize<Purchase, Entities>(purchase, PurchaseEntity);
         vendors.setEntities(entities.vendors);
         transactions.setEntities(entities.transactions);
         entries.setEntities(entities.entries);
-        store.save(purchase.ID, purchase);
+
+        store.save(purchase.ID, entities.purchases[purchase.ID]);
     }
 
     function _normalize(data: Record<string, string>) {
