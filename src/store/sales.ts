@@ -2,11 +2,13 @@ import { normalize, schema } from "normalizr";
 import { Accessor, createRoot } from "solid-js";
 import { makeStore, Module } from ".";
 import axios from "../axios";
-import { Account, Customer, Product, Sale, SaleItem } from "../types";
+import { Account, Customer, Entry, Product, Sale, SaleItem, Transaction } from "../types";
 import accounts, { AccountEntity } from "./accounts";
 import customers, { CustomerEntity } from "./customers";
+import entries, { EntryEntity } from "./entries";
 import products from "./products";
 import sale_items, { SaleItemEntity } from "./sale_items";
+import transactions from "./transactions";
 
 type Getters = {
     all: Accessor<Sale[]>;
@@ -16,6 +18,8 @@ type Getters = {
 export type SaleModule = Module<Sale> & Getters;
 
 type Entities = {
+    entries: Record<number, Entry>;
+    transactions: Record<number, Transaction>;
     sales: Record<number, Sale>;
     sale_items: Record<number, SaleItem>;
     accounts: Record<number, Account>;
@@ -25,6 +29,7 @@ type Entities = {
 
 export const SaleEntity = new schema.Entity('sales', {
     Items: [SaleItemEntity],
+    Entries: [EntryEntity],
     Customer: CustomerEntity,
     PaymentAccount: AccountEntity,
     ReceivableAccount: AccountEntity,
@@ -69,6 +74,8 @@ function create(): SaleModule {
             accounts.setEntities(entities.accounts);
             products.setEntities(entities.products);
             customers.setEntities(entities.customers);
+            transactions.setEntities(entities.transactions);
+            entries.setEntities(entities.entries);
             sale_items.setEntities(entities.sale_items);
 
             store.setEntities(entities.sales);
@@ -85,6 +92,8 @@ function create(): SaleModule {
             accounts.setEntities(entities.accounts);
             products.setEntities(entities.products);
             customers.setEntities(entities.customers);
+            transactions.setEntities(entities.transactions);
+            entries.setEntities(entities.entries);
             sale_items.setEntities(entities.sale_items);
 
             store.setAll(result, entities.sales);
@@ -98,7 +107,14 @@ function create(): SaleModule {
         } else {
             sale = await axios.post('/sales', _normalize(data));
         }
-        store.save(sale.ID, sale);
+
+        const { entities } = normalize<Sale, Entities>(sale, SaleEntity);
+        products.setEntities(entities.products);
+        sale_items.setEntities(entities.sale_items);
+        transactions.setEntities(entities.transactions);
+        entries.setEntities(entities.entries);
+
+        store.save(sale.ID, entities.sales[sale.ID]);
     }
 
     function _normalize(data: Record<string, any>) {

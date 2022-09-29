@@ -20,7 +20,6 @@ const ServiceForm: Component = function() {
 
         if (params.id) {
             const service = await services.fetch(parseInt(params.id));
-            console.log(service);
             initialData = JSON.parse(JSON.stringify(service));
         }
 
