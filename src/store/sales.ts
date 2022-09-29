@@ -135,6 +135,12 @@ function create(): SaleModule {
 
     async function deleteSale(id: number) {
         await axios.delete(`/sales/${id}`);
+
+        const sale = store.state.byId[id];
+        for (const entryId of sale.Entries) {
+            entries.remove(entryId);
+        }
+
         store.remove(id);
     }
 

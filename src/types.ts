@@ -111,6 +111,7 @@ export type Sale = {
     Paid: boolean;
     Customer: Customer;
     CustomerID: number;
+    Entries: number[];
     Items: number[] | SaleItem[];
     PaymentAccount?: Account;
     PaymentAccountID: number;
