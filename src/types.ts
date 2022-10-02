@@ -23,6 +23,7 @@ export type Account = {
     ID: number;
     Name: string;
     Type: AccountType;
+    Balance: number;
     ParentID: number;
     Parent: Account | null;
     Children: Account[] | null;

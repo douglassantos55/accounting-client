@@ -3,8 +3,8 @@ import { Accessor, createMemo, createRoot } from "solid-js";
 import { makeStore, Module } from ".";
 import axios from "../axios";
 import { Account, Entry, Transaction } from "../types";
-import accounts from "./accounts";
-import transactions, { TransactionEntity } from "./transactions";
+import accounts, { TransactionEntity } from "./accounts";
+import transactions from "./transactions";
 
 type Getters = {
     all: Accessor<Entry[]>;

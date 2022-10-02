@@ -1,16 +1,13 @@
-import { schema } from "normalizr";
 import { makeStore } from ".";
 import { Transaction } from "../types";
-import accounts, { AccountEntity } from "./accounts";
+import accounts from "./accounts";
 
 export type TransactionModule = {
     get: (id: number) => Transaction | undefined;
+    forAccount: (accountID: number) => Transaction[];
     setEntities: (entities: Record<number, Transaction>) => void;
 }
 
-export const TransactionEntity = new schema.Entity('transactions', {
-    Account: AccountEntity,
-}, { idAttribute: 'ID' });
 
 function create(): TransactionModule {
     const store = makeStore<Transaction>();
@@ -22,12 +19,21 @@ function create(): TransactionModule {
         };
     }
 
+    function forAccount(accountID: number): Transaction[] {
+        return store.state.ids.map(function(id: number) {
+            return store.state.byId[id];
+        }).filter(function(transaction: Transaction) {
+            return transaction.AccountID == accountID;
+        });
+    }
+
     function get(id: number) {
         return withRelations(store.state.byId[id]);
     }
 
     return {
         get,
+        forAccount,
         setEntities: store.setEntities,
     };
 }

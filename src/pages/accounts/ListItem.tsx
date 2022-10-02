@@ -17,6 +17,7 @@ const ListItem: Component<ListItemProps> = (props: ListItemProps) => {
             <tr>
                 <td style={{ 'padding-left': `${props.depth * 1.5}rem` }}>{props.account.Name}</td>
                 <td>{AccountType[props.account.Type]}</td>
+                <td>{props.account.Balance}</td>
                 <td>
                     <div class="d-flex gap-2 justify-content-end align-items-center">
                         <Link class="btn btn-sm btn-primary" href={`/accounts/edit/${props.account.ID}`}>

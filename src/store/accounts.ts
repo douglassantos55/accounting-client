@@ -2,14 +2,24 @@ import { normalize, schema } from "normalizr";
 import { Accessor, createMemo, createRoot } from "solid-js";
 import { makeStore, Module } from ".";
 import axios from "../axios";
-import { Account, AccountType } from "../types";
+import { Account, AccountType, Transaction } from "../types";
+import transactions from "./transactions";
 
 export const AccountEntity = new schema.Entity('accounts', undefined, {
     idAttribute: 'ID',
 });
 
+export const TransactionEntity = new schema.Entity('transactions', {
+    Account: AccountEntity,
+}, { idAttribute: 'ID' });
+
+AccountEntity.define({
+    Transactions: [TransactionEntity],
+})
+
 type Entities = {
     accounts: Record<number, Account>;
+    transactions: Record<number, Transaction>;
 }
 
 type Getters = {
@@ -26,7 +36,12 @@ function create(): AccountModule {
 
     const getters = createRoot(function() {
         const get = function(id: number) {
-            return store.state.byId[id];
+            return {
+                ...store.state.byId[id],
+                Balance: transactions.forAccount(id).reduce(function(total: number, transaction: Transaction) {
+                    return total + transaction.Value;
+                }, 0),
+            };
         }
 
         const all = createMemo(function() {
@@ -86,6 +101,8 @@ function create(): AccountModule {
         if (!store.state.byId[id]) {
             const response = await axios.get(`/accounts/${id}`);
             const { entities } = normalize<Account, Entities>(response, AccountEntity);
+
+            transactions.setEntities(entities.transactions);
             store.setEntities(entities.accounts);
         }
         return store.state.byId[id];
@@ -95,6 +112,8 @@ function create(): AccountModule {
         if (!store.state.fetched) {
             const response = await axios.get('/accounts');
             const { result, entities } = normalize<Account, Entities>(response, [AccountEntity]);
+
+            transactions.setEntities(entities.transactions);
             store.setAll(result, entities.accounts);
         }
     }
