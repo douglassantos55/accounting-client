@@ -10,6 +10,7 @@ const Services = lazy(() => import('./pages/services'));
 const Purchases = lazy(() => import('./pages/purchases'));
 const Entries = lazy(() => import('./pages/entries'));
 const Sales = lazy(() => import('./pages/sales'));
+const Reports = lazy(() => import('./pages/reports'));
 
 const App: Component = () => {
     return (
@@ -84,6 +85,10 @@ const App: Component = () => {
                     <Route path="/sales">
                         <Sales />
                     </Route>
+
+                    <Route path="/reports">
+                        <Reports />
+                    </Route>:
                 </Routes>
             </main>
         </>

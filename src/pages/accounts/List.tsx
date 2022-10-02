@@ -13,12 +13,21 @@ const List: Component = () => {
             <div class="d-flex align-items-center mb-4">
                 <h1>Accounts</h1>
 
-                <Link
-                    href="/accounts/create"
-                    class="btn btn-primary ms-auto"
-                >
-                    Create
-                </Link>
+                <div class="d-flex align-items-center ms-auto gap-3">
+                    <Link
+                        href="/reports/balance-sheet"
+                        class="btn btn-secondary"
+                    >
+                        Balance sheet
+                    </Link>
+
+                    <Link
+                        href="/accounts/create"
+                        class="btn btn-primary"
+                    >
+                        Create
+                    </Link>
+                </div>
             </div>
 
             <table class="table">
