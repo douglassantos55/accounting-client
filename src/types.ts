@@ -81,6 +81,7 @@ export type Service = {
 export type Purchase = {
     ID: number;
     Qty: number;
+    CreatedAt: string;
     PaymentDate: string;
     Price: string;
     Paid: boolean;
@@ -96,6 +97,7 @@ export type Purchase = {
 
 export type Entry = {
     ID: number;
+    CreatedAt: string;
     Description: string;
     Transactions: Transaction[] | number[];
 }
@@ -109,6 +111,7 @@ export type Transaction = {
 
 export type Sale = {
     ID: number;
+    CreatedAt: string;
     Paid: boolean;
     Customer: Customer;
     CustomerID: number;

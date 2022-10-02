@@ -22,6 +22,7 @@ const List: Component = function() {
             <table class="table">
                 <thead>
                     <tr>
+                        <th>Date</th>
                         <th>Description</th>
                         <th>Transactions</th>
                         <th>&nbsp;</th>
@@ -31,14 +32,15 @@ const List: Component = function() {
                 <tbody>
                     <Switch>
                         <Match when={!entries.state.fetched}>
-                            <tr><td colspan="3">Fetching data, please wait...</td></tr>
+                            <tr><td colspan="4">Fetching data, please wait...</td></tr>
                         </Match>
                         <Match when={entries.state.ids.length == 0}>
-                            <tr><td colspan="3">No entries created yet.</td></tr>
+                            <tr><td colspan="4">No entries created yet.</td></tr>
                         </Match>
                         <Match when={entries.state.ids.length > 0}>
                             <For each={entries.all()}>{(entry: Entry) => (
                                 <tr>
+                                    <td>{new Date(entry.CreatedAt).toLocaleString()}</td>
                                     <td>{entry.Description}</td>
                                     <td>
                                         <table class="table mb-0">
