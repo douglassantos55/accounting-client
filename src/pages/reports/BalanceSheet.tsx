@@ -1,4 +1,4 @@
-import { Component, createMemo, For, onMount, Show } from "solid-js";
+import { Component, createMemo, createSignal, For, onMount, Show } from "solid-js";
 import { useStore } from "../../store";
 import { Account, AccountType } from "../../types";
 
@@ -21,15 +21,20 @@ const Item: Component<ItemProps> = (props: ItemProps) => {
     );
 }
 
+function formatDate(date: Date): string {
+    return date.toISOString().substring(0, 10);
+}
+
 const BalanceSheet: Component = function() {
     const { accounts } = useStore();
+    const [date, setDate] = createSignal(formatDate(new Date()));
 
     onMount(accounts.fetchAll);
 
     const liabilities = createMemo(function() {
-        return accounts.hierarchical().filter(function(account: Account) {
+        return accounts.balance(accounts.hierarchical().filter(function(account: Account) {
             return [AccountType.Equity, AccountType.Liability].includes(account.Type);
-        });
+        }), '', date());
     });
 
     function getBalance(accounts: Account[]): number {
@@ -43,9 +48,9 @@ const BalanceSheet: Component = function() {
     });
 
     const assets = createMemo(function() {
-        return accounts.hierarchical().filter(function(account: Account) {
+        return accounts.balance(accounts.hierarchical().filter(function(account: Account) {
             return account.Type == AccountType.Asset;
-        });
+        }), '', date());
     });
 
     const totalAssets = createMemo(function() {
@@ -54,7 +59,16 @@ const BalanceSheet: Component = function() {
 
     return (
         <div class="container py-4">
-            <h1 class="mb-4">Balance sheet</h1>
+            <div class="d-flex align-items-center">
+                <h1 class="mb-4">Balance sheet</h1>
+
+                <input
+                    type="date"
+                    class="ms-auto form-control w-auto"
+                    value={date()}
+                    onChange={(e: any) => setDate(e.target.value)}
+                />
+            </div>
 
             <Show when={accounts.state.fetched} fallback={<p>Loading accounts...</p>}>
                 <table class="table">

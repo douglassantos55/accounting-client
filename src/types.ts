@@ -104,6 +104,7 @@ export type Entry = {
 
 export type Transaction = {
     ID: number;
+    CreatedAt: string;
     Value: number;
     Account: Account;
     AccountID: number;

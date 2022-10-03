@@ -1,5 +1,5 @@
 import { Link } from "@solidjs/router";
-import { Component, For, Match, onMount, Switch } from "solid-js";
+import { Component, createMemo, For, Match, onMount, Switch } from "solid-js";
 import { useStore } from "../../store";
 import ListItem from "./ListItem";
 
@@ -7,6 +7,10 @@ const List: Component = () => {
     const { accounts } = useStore();
 
     onMount(accounts.fetchAll);
+
+    const items = createMemo(function() {
+        return accounts.balance(accounts.hierarchical(), '', '');
+    });
 
     return (
         <div class="container py-4">
@@ -39,7 +43,7 @@ const List: Component = () => {
                             </tr>
                         </Match>
                         <Match when={accounts.state.fetched}>
-                            <For each={accounts.hierarchical()}>{account =>
+                            <For each={items()}>{account =>
                                 <ListItem account={account} depth={0} />
                             }</For>
                         </Match>

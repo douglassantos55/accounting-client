@@ -27,6 +27,7 @@ type Getters = {
     get: (id: number) => Account;
     hierarchical: Accessor<Account[]>;
     type: (type: AccountType) => Account[];
+    balance: (accounts: Account[], start: string, endd: string) => Account[];
 }
 
 export type AccountModule = Module<Account> & Getters;
@@ -34,14 +35,27 @@ export type AccountModule = Module<Account> & Getters;
 function create(): AccountModule {
     const store = makeStore<Account>();
 
+    function getTransactions(accountID: number, start: string, end: string) {
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+
+        return transactions.forAccount(accountID).filter(function(transaction: Transaction) {
+            return !end || new Date(transaction.CreatedAt) < endDate;
+        });
+    }
+
+    function withBalance(account: Account, start: string, end: string) {
+        return {
+            ...account,
+            Balance: getTransactions(account.ID, start, end).reduce(function(total: number, transaction: Transaction) {
+                return total + transaction.Value;
+            }, 0),
+        }
+    }
+
     const getters = createRoot(function() {
         const get = function(id: number) {
-            return {
-                ...store.state.byId[id],
-                Balance: transactions.forAccount(id).reduce(function(total: number, transaction: Transaction) {
-                    return total + transaction.Value;
-                }, 0),
-            };
+            return store.state.byId[id];
         }
 
         const all = createMemo(function() {
@@ -76,7 +90,16 @@ function create(): AccountModule {
             });
         }
 
-        return { get, all, type, hierarchical };
+        const balance = function(accounts: Account[], start: string, end: string) {
+            return accounts.map(function(account: Account) {
+                return {
+                    ...withBalance(account, start, end),
+                    Children: balance(account.Children || [], start, end),
+                }
+            });
+        }
+
+        return { get, all, type, balance, hierarchical };
     });
 
     function _normalize(data: Record<string, string>) {
