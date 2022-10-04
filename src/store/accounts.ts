@@ -40,7 +40,8 @@ function create(): AccountModule {
         const endDate = new Date(end);
 
         return transactions.forAccount(accountID).filter(function(transaction: Transaction) {
-            return !end || new Date(transaction.CreatedAt) < endDate;
+            const createdAt = new Date(transaction.CreatedAt);
+            return (!start || createdAt >= startDate) && (!end || createdAt <= endDate);
         });
     }
 

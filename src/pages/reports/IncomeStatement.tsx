@@ -1,24 +1,26 @@
 import { Component, createMemo, createSignal, For, onMount, Show } from "solid-js";
+import { Field } from "../../components/Form";
 import { useStore } from "../../store";
 import { Account, AccountType } from "../../types";
 import Item from "./Item";
 
 const IncomeStatement: Component = function() {
     const { accounts } = useStore();
-    const [date, setDate] = createSignal('');
+    const [startDate, setStartDate] = createSignal('');
+    const [endDate, setEndDate] = createSignal('');
 
     onMount(accounts.fetchAll);
 
     const revenue = createMemo(function() {
         return accounts.balance(accounts.hierarchical().filter(function(account: Account) {
             return account.Type == AccountType.Revenue;
-        }), '', '');
+        }), startDate(), endDate());
     });
 
     const expenses = createMemo(function() {
         return accounts.balance(accounts.hierarchical().filter(function(account: Account) {
             return account.Type == AccountType.Expense;
-        }), '', '');
+        }), startDate(), endDate());
     });
 
     const totalRevenue = createMemo(function() {
@@ -40,14 +42,27 @@ const IncomeStatement: Component = function() {
     return (
         <div class="container py-4">
             <div class="d-flex align-items-center">
-                <h1 class="mb-4">Income Statement</h1>
+                <h1 class="mb-4 me-auto">Income Statement</h1>
 
-                <input
-                    type="date"
-                    class="ms-auto form-control w-auto"
-                    value={date()}
-                    onChange={(e: any) => setDate(e.target.value)}
-                />
+                <div class="d-flex gap-3">
+                    <Field label="Start date">
+                        <input
+                            type="date"
+                            class="form-control w-auto"
+                            value={startDate()}
+                            onChange={(e: any) => setStartDate(e.target.value)}
+                        />
+                    </Field>
+
+                    <Field label="End date">
+                        <input
+                            type="date"
+                            class="form-control w-auto"
+                            value={endDate()}
+                            onChange={(e: any) => setEndDate(e.target.value)}
+                        />
+                    </Field>
+                </div>
             </div>
 
             <Show when={accounts.state.fetched} fallback={<p>Loading accounts...</p>}>
