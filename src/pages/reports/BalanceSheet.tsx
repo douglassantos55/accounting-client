@@ -1,25 +1,7 @@
 import { Component, createMemo, createSignal, For, onMount, Show } from "solid-js";
 import { useStore } from "../../store";
 import { Account, AccountType } from "../../types";
-
-type ItemProps = {
-    account: Account;
-    depth: number;
-}
-
-const Item: Component<ItemProps> = (props: ItemProps) => {
-    return (
-        <>
-            <tr>
-                <td style={{ 'padding-left': `${props.depth * 1.5}rem` }}>{props.account.Name}</td>
-                <td class="text-end">{props.account.Balance}</td>
-            </tr>
-            <For each={props.account.Children}>{child =>
-                <Item account={child} depth={props.depth + 1} />
-            }</For>
-        </>
-    );
-}
+import Item from "./Item";
 
 function formatDate(date: Date): string {
     return date.toISOString().substring(0, 10);
@@ -39,7 +21,7 @@ const BalanceSheet: Component = function() {
 
     function getBalance(accounts: Account[]): number {
         return accounts.reduce(function(carry: number, account: Account) {
-            return carry + account.Balance + getBalance(account.Children as Account[]);
+            return carry + account.Balance;
         }, 0);
     }
 

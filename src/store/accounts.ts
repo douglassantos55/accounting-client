@@ -45,10 +45,14 @@ function create(): AccountModule {
     }
 
     function withBalance(account: Account, start: string, end: string) {
+        const transactions = getTransactions(account.ID, start, end);
+
         return {
             ...account,
-            Balance: getTransactions(account.ID, start, end).reduce(function(total: number, transaction: Transaction) {
+            Balance: transactions.reduce(function(total: number, transaction: Transaction) {
                 return total + transaction.Value;
+            }, 0) + account.Children?.reduce(function(total: number, account: Account) {
+                return total + account.Balance;
             }, 0),
         }
     }
@@ -90,12 +94,10 @@ function create(): AccountModule {
             });
         }
 
-        const balance = function(accounts: Account[], start: string, end: string) {
+        const balance = function(accounts: Account[], start: string, end: string): Account[] {
             return accounts.map(function(account: Account) {
-                return {
-                    ...withBalance(account, start, end),
-                    Children: balance(account.Children || [], start, end),
-                }
+                account.Children = balance(account.Children || [], start, end);
+                return withBalance(account, start, end);
             });
         }
 
